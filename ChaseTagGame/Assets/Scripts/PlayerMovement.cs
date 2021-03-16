@@ -7,7 +7,7 @@ public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody rigidBody;
     private Animator characterAnimator;
-    private Collider playerCollider;
+    private CapsuleCollider playerCollider;
     private CinemachineFreeLook freeLookCamera;
     private Vector3 nextMovement;
 
@@ -31,7 +31,7 @@ public class PlayerMovement : MonoBehaviour
         rigidBody = GetComponent<Rigidbody>();
         characterAnimator = GetComponentInChildren<Animator>();
         freeLookCamera = GetComponentInChildren<CinemachineFreeLook>();
-        playerCollider = GetComponent<Collider>();
+        playerCollider = GetComponent<CapsuleCollider>();
     }
 
     void Update()
@@ -46,6 +46,12 @@ public class PlayerMovement : MonoBehaviour
             Jump();
         else if (isRunning && isBeginningSliding && isGrounded && verticalAxis > 0)
             Slide();
+
+
+        var newCenter = playerCollider.center;
+        newCenter.y = isSliding ? 0.3f : 0.9f;
+        playerCollider.center = newCenter;
+        playerCollider.height = newCenter.y * 2;
 
 
         //Debug.Log((1f / Time.unscaledDeltaTime));
