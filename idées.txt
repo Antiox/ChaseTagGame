@@ -1,0 +1,18 @@
+- Spawn de plus en plus d'ennemis au fil du temps
+
+- Power Up
+	- Bouclier : Permet de se faire toucher une fois, plus se casse
+	- Vitesse augmentée
+	- Tue / Freeze un ennemi sur le terrain
+	- 
+	
+- Power Up Ennemi
+	- L'ennemi génère une trainée de brouillard
+	- Vitesse augmentée
+	- Ralenti le joueur
+	- Traverse les obstacles
+	- Peut se téléporter
+	
+- Faire des ennemis spéciaux
+
+- 
