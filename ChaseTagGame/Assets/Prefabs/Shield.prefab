@@ -577,6 +577,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5553750832791590678}
   - component: {fileID: 5553750832782276852}
+  - component: {fileID: 4062688058795057149}
+  - component: {fileID: 3476991951787762642}
   m_Layer: 0
   m_Name: Shield
   m_TagString: Untagged
@@ -629,6 +631,32 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!135 &4062688058795057149
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5553750832791751478}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.59
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3476991951787762642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5553750832791751478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12d39f8a5aeb87f428081761a9f03b6d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 5
 --- !u!1 &5553750832791751480
 GameObject:
   m_ObjectHideFlags: 0
@@ -964,7 +992,6 @@ GameObject:
   - component: {fileID: 5553750834390212170}
   - component: {fileID: 5553750834390212175}
   - component: {fileID: 5553750834390212168}
-  - component: {fileID: 5553750834390212169}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -1035,16 +1062,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &5553750834390212169
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5553750834390212171}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}

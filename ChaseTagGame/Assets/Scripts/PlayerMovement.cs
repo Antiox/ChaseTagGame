@@ -10,7 +10,7 @@ public class PlayerMovement : MonoBehaviour
     private CapsuleCollider playerCollider;
     private CinemachineFreeLook freeLookCamera;
     private Vector3 nextMovement;
-    private GameObject gameManager;
+    private GameScript gameManagerScript;
 
     public float MoveFactor;
     public float TurnFactor;
@@ -33,7 +33,7 @@ public class PlayerMovement : MonoBehaviour
         characterAnimator = GetComponentInChildren<Animator>();
         freeLookCamera = GetComponentInChildren<CinemachineFreeLook>();
         playerCollider = GetComponent<CapsuleCollider>();
-        gameManager = GameObject.FindGameObjectWithTag("GameManager");
+        gameManagerScript = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameScript>();
     }
 
     void Update()
@@ -54,6 +54,8 @@ public class PlayerMovement : MonoBehaviour
         newCenter.y = isSliding ? 0.3f : 0.9f;
         playerCollider.center = newCenter;
         playerCollider.height = newCenter.y * 2;
+
+        gameManagerScript.AddPoints(nextMovement.magnitude * Time.deltaTime);
     }
 
     private void FixedUpdate()
@@ -97,7 +99,6 @@ public class PlayerMovement : MonoBehaviour
 
         nextMovement = (sideMovement + forwardMovement).normalized;
 
-        gameManager.GetComponent<GameScript>().AddPoints((int)nextMovement.magnitude);
 
         if (nextMovement.magnitude > 0)
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(cameraFrontDirection), TurnFactor * Time.deltaTime);

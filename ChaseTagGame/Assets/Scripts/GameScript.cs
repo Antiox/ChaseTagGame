@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using GameLibrary;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,14 +12,20 @@ public class GameScript : MonoBehaviour
     public Text pointCounterLabel;
     public Text fpsCounterLabel;
 
+    private GameObject player;
+    private PowerUpManager powerUpManager;
 
     private bool isPaused = false;
-    private int points = 0;
+    private float points = 0;
     private float fpsSmoothing = 0;
 
     public void Start()
     {
         Time.timeScale = 1f;
+
+        powerUpManager = new PowerUpManager();
+        player = GameObject.FindGameObjectWithTag("Player");
+        powerUpManager.AddEntity(player);
     }
 
     void Update()
@@ -41,6 +48,9 @@ public class GameScript : MonoBehaviour
             fpsSmoothing = 0;
             fpsCounterLabel.text = (1f / Time.unscaledDeltaTime).ToString("N0") + " FPS";
         }
+
+        powerUpManager.UpdateDurations(Time.deltaTime);
+        Debug.Log(powerUpManager.GetAllEntityPowerUps(player));
     }
 
     public void GameOver()
@@ -67,8 +77,18 @@ public class GameScript : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    public void AddPoints(int p)
+    public void AddPoints(float p)
     {
         points += p;
+    }
+
+
+    public void NotifyPowerUpTriggerEnter(Collider other, GameObject sender)
+    {
+        if(other.tag == "Player")
+        {
+            powerUpManager.AddPowerUpToEntity(other.gameObject, sender.GetComponent<PowerUpScript>().type);
+            Destroy(sender);
+        }
     }
 }
