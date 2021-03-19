@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace ExtensionClass
@@ -7,7 +9,7 @@ namespace ExtensionClass
     {
         public static void IncreaseGravity(this Rigidbody body, float factor)
         {
-            if (!Mathf.Approximately(Math.Abs(body.velocity.y), 0))
+            if (!ApproximatelyEquals(Math.Abs(body.velocity.y), 0))
             {
                 var velocity = body.velocity;
                 velocity.y += Physics.gravity.y * factor * Time.deltaTime;
@@ -25,6 +27,12 @@ namespace ExtensionClass
         public static bool ApproximatelyEquals(float a, float b)
         {
             return Math.Abs(a - b) < 0.0001;
+        }
+
+        public static IEnumerator Invoke(Action action, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            action();
         }
     }
 }

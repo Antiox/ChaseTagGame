@@ -11,9 +11,6 @@ namespace GameLibrary
     {
         public Dictionary<GameObject, List<PowerUp>> Entities { get; set; } = new Dictionary<GameObject, List<PowerUp>>();
 
-        public PowerUpManager()
-        {
-        }
 
         public void AddEntity(GameObject entity)
         {
@@ -46,7 +43,7 @@ namespace GameLibrary
         public string GetAllEntityPowerUps(GameObject entity)
         {
             if (!Entities.ContainsKey(entity))
-                return "Entity doesn't exist";
+                return "";
 
             return string.Join(" | ", Entities[entity]);
         }

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using ExtensionClass;
+
 
 public class GameScript : MonoBehaviour
 {
@@ -24,7 +26,7 @@ public class GameScript : MonoBehaviour
         Time.timeScale = 1f;
 
         powerUpManager = new PowerUpManager();
-        player = GameObject.FindGameObjectWithTag("Player");
+        player = GameObject.FindGameObjectWithTag(GameTags.Player);
         powerUpManager.AddEntity(player);
     }
 
@@ -57,7 +59,7 @@ public class GameScript : MonoBehaviour
     {
         gameOverLabel.enabled = true;
         Time.timeScale = 0.01f;
-        Invoke("RestartGame", 3f * Time.timeScale);
+        Extensions.Invoke(RestartGame, 3f * Time.timeScale);
     }
 
     public void PauseGame()
@@ -85,7 +87,7 @@ public class GameScript : MonoBehaviour
 
     public void NotifyPowerUpTriggerEnter(Collider other, GameObject sender)
     {
-        if(other.tag == "Player")
+        if(other.tag == GameTags.Player)
         {
             powerUpManager.AddPowerUpToEntity(other.gameObject, sender.GetComponent<PowerUpScript>().type);
             Destroy(sender);
@@ -94,7 +96,7 @@ public class GameScript : MonoBehaviour
 
     public void NotifyEnemyTriggerEnter(Collider other, GameObject sender)
     {
-        if (other.tag == "Player")
+        if (other.tag == GameTags.Player)
         {
             if(powerUpManager.IsEntityShielded(other.gameObject))
                 powerUpManager.RemovePowerUpFromEntity(other.gameObject, PowerUpType.Shield);

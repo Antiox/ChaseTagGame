@@ -2,6 +2,7 @@
 using Cinemachine;
 using System;
 using ExtensionClass;
+using GameLibrary;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -33,7 +34,7 @@ public class PlayerMovement : MonoBehaviour
         characterAnimator = GetComponentInChildren<Animator>();
         freeLookCamera = GetComponentInChildren<CinemachineFreeLook>();
         playerCollider = GetComponent<CapsuleCollider>();
-        gameManagerScript = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameScript>();
+        gameManagerScript = GameObject.FindGameObjectWithTag(GameTags.GameManager).GetComponent<GameScript>();
     }
 
     void Update()

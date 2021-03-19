@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using GameLibrary;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -13,8 +14,8 @@ public class EnemyScript : MonoBehaviour
     void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
-        gameManager = GameObject.FindGameObjectWithTag("GameManager");
-        target = GameObject.FindGameObjectWithTag("Player");
+        gameManager = GameObject.FindGameObjectWithTag(GameTags.GameManager);
+        target = GameObject.FindGameObjectWithTag(GameTags.Player);
     }
 
     void Update()

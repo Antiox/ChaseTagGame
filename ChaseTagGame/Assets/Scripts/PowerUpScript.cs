@@ -8,10 +8,10 @@ public class PowerUpScript : MonoBehaviour
     public PowerUpType type;
     private GameObject gameManager;
 
-    // Start is called before the first frame update
+
     void Start()
     {
-        gameManager = GameObject.FindGameObjectWithTag("GameManager");
+        gameManager = GameObject.FindGameObjectWithTag(GameTags.GameManager);
     }
 
     private void OnTriggerEnter(Collider other)
