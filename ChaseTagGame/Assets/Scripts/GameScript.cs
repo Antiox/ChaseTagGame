@@ -9,10 +9,12 @@ public class GameScript : MonoBehaviour
     public Text gamePausedLabel;
     public Text gameOverLabel;
     public Text pointCounterLabel;
+    public Text fpsCounterLabel;
 
 
     private bool isPaused = false;
     private int points = 0;
+    private float fpsSmoothing = 0;
 
     public void Start()
     {
@@ -31,6 +33,14 @@ public class GameScript : MonoBehaviour
         }
 
         pointCounterLabel.text = points.ToString("N0");
+
+        fpsSmoothing += Time.deltaTime;
+
+        if(fpsSmoothing > 0.5f)
+        {
+            fpsSmoothing = 0;
+            fpsCounterLabel.text = (1f / Time.unscaledDeltaTime).ToString("N0") + " FPS";
+        }
     }
 
     public void GameOver()

@@ -54,9 +54,6 @@ public class PlayerMovement : MonoBehaviour
         newCenter.y = isSliding ? 0.3f : 0.9f;
         playerCollider.center = newCenter;
         playerCollider.height = newCenter.y * 2;
-
-
-        //Debug.Log((1f / Time.unscaledDeltaTime));
     }
 
     private void FixedUpdate()
