@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
     private CapsuleCollider playerCollider;
     private CinemachineFreeLook freeLookCamera;
     private Vector3 nextMovement;
+    private GameObject gameManager;
 
     public float MoveFactor;
     public float TurnFactor;
@@ -32,6 +33,7 @@ public class PlayerMovement : MonoBehaviour
         characterAnimator = GetComponentInChildren<Animator>();
         freeLookCamera = GetComponentInChildren<CinemachineFreeLook>();
         playerCollider = GetComponent<CapsuleCollider>();
+        gameManager = GameObject.FindGameObjectWithTag("GameManager");
     }
 
     void Update()
@@ -97,6 +99,8 @@ public class PlayerMovement : MonoBehaviour
             sideMovement = Vector3.zero;
 
         nextMovement = (sideMovement + forwardMovement).normalized;
+
+        gameManager.GetComponent<GameScript>().AddPoints((int)nextMovement.magnitude);
 
         if (nextMovement.magnitude > 0)
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(cameraFrontDirection), TurnFactor * Time.deltaTime);

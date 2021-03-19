@@ -10,9 +10,9 @@ public class GameScript : MonoBehaviour
     public Text gameOverLabel;
     public Text pointCounterLabel;
 
+
     private bool isPaused = false;
-    private bool isGameOver = false;
-    private float points = 0;
+    private int points = 0;
 
     public void Start()
     {
@@ -30,14 +30,11 @@ public class GameScript : MonoBehaviour
                 UnpauseGame();
         }
 
-        if(!isGameOver)
-            points += Time.deltaTime * 10;
         pointCounterLabel.text = points.ToString("N0");
     }
 
     public void GameOver()
     {
-        isGameOver = true;
         gameOverLabel.enabled = true;
         Time.timeScale = 0.01f;
         Invoke("RestartGame", 3f * Time.timeScale);
@@ -58,5 +55,10 @@ public class GameScript : MonoBehaviour
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void AddPoints(int p)
+    {
+        points += p;
     }
 }

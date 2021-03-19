@@ -5,22 +5,21 @@ using UnityEngine.AI;
 
 public class EnemyScript : MonoBehaviour
 {
-    public Transform target;
-    public GameObject gameManager;
+    private GameObject target;
+    private GameObject gameManager;
 
     private NavMeshAgent navMeshAgent;
-    private Collider proximityTriggerCollider;
 
     void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         gameManager = GameObject.FindGameObjectWithTag("GameManager");
-        proximityTriggerCollider = GetComponentInChildren<Collider>();
+        target = GameObject.FindGameObjectWithTag("Player");
     }
 
     void Update()
     {
-        navMeshAgent.SetDestination(target.position);
+        navMeshAgent.SetDestination(target.transform.position);
         Debug.Log(navMeshAgent.isOnNavMesh);
     }
 
