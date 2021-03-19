@@ -49,7 +49,7 @@ public class GameScript : MonoBehaviour
             fpsCounterLabel.text = (1f / Time.unscaledDeltaTime).ToString("N0") + " FPS";
         }
 
-        powerUpManager.UpdateDurations(Time.deltaTime);
+        powerUpManager.Update();
         Debug.Log(powerUpManager.GetAllEntityPowerUps(player));
     }
 

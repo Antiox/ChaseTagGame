@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace GameLibrary
 {
@@ -29,9 +30,27 @@ namespace GameLibrary
             Duration += duration;
         }
 
+        public void StartEffects(GameObject entity)
+        {
+            ToggleEffects(entity, true);
+        }
+
+        public void StopEffects(GameObject entity)
+        {
+            ToggleEffects(entity, false);
+        }
+
+        private void ToggleEffects(GameObject entity, bool active)
+        {
+            var effect = entity.transform.Find($"{Type}Effect");
+            if (effect != null)
+                effect.gameObject.SetActive(active);
+        }
+
         public override string ToString()
         {
             return $"{Type} - {Duration}";
         }
     }
 }
+ 

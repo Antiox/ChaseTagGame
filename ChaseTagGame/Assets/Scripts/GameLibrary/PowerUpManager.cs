@@ -29,28 +29,18 @@ namespace GameLibrary
 
             var existingPowerUp = powerUps.Find(p => p.Type == type);
             if(existingPowerUp == null)
-                powerUps.Add(new PowerUp(type));
+            {
+                var p = new PowerUp(type);
+                p.StartEffects(entity);
+                powerUps.Add(p);
+            }
             else
                 existingPowerUp.ExtendDuration((int)type);
         }
 
-        public void UpdateDurations(float delta)
+        public void Update()
         {
-            for (int i = Entities.Count - 1; i >= 0; i--)
-            {
-                var e = Entities.ElementAt(i);
-                for (int j = e.Value.Count - 1; j >= 0; j--)
-                {
-                    var p = e.Value[j];
-
-                    p.Duration -= delta;
-                    if (p.Duration <= 0)
-                        Entities[e.Key].Remove(p);
-                }
-
-                if (e.Value.Count == 0)
-                    Entities.Remove(e.Key);
-            }
+            UpdateDurations();
         }
 
         public string GetAllEntityPowerUps(GameObject entity)
@@ -60,5 +50,28 @@ namespace GameLibrary
 
             return string.Join(" | ", Entities[entity]);
         }
+
+        private void UpdateDurations()
+        {
+            for (int i = Entities.Count - 1; i >= 0; i--)
+            {
+                var e = Entities.ElementAt(i);
+                for (int j = e.Value.Count - 1; j >= 0; j--)
+                {
+                    var p = e.Value[j];
+
+                    p.Duration -= Time.deltaTime;
+                    if (p.Duration <= 0)
+                    {
+                        Entities[e.Key].Remove(p);
+                        p.StopEffects(e.Key);
+                    }
+                }
+
+                if (e.Value.Count == 0)
+                    Entities.Remove(e.Key);
+            }
+        }
+
     }
 }
