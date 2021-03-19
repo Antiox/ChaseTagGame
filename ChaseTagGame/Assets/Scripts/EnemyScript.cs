@@ -25,7 +25,6 @@ public class EnemyScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "Player")
-            gameManager.GetComponent<GameScript>().GameOver();
+        gameManager.GetComponent<GameScript>().NotifyEnemyTriggerEnter(other, gameObject);
     }
 }

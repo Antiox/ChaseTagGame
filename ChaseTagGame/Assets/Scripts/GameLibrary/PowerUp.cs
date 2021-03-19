@@ -37,6 +37,7 @@ namespace GameLibrary
 
         public void StopEffects(GameObject entity)
         {
+            Duration = 0;
             ToggleEffects(entity, false);
         }
 

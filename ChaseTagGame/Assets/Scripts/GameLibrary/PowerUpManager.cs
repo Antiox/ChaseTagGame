@@ -51,6 +51,20 @@ namespace GameLibrary
             return string.Join(" | ", Entities[entity]);
         }
 
+        public bool IsEntityShielded(GameObject entity)
+        {
+            if (!Entities.ContainsKey(entity))
+                return false;
+
+            return Entities[entity].Find(p => p.Type == PowerUpType.Shield) != null;
+        }
+
+        public void RemovePowerUpFromEntity(GameObject entity, PowerUpType type)
+        {
+            var powerUp = Entities[entity].Find(p => p.Type == type);
+            powerUp.StopEffects(entity);
+        }
+
         private void UpdateDurations()
         {
             for (int i = Entities.Count - 1; i >= 0; i--)

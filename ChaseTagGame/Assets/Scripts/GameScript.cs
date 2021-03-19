@@ -91,4 +91,16 @@ public class GameScript : MonoBehaviour
             Destroy(sender);
         }
     }
+
+    public void NotifyEnemyTriggerEnter(Collider other, GameObject sender)
+    {
+        if (other.tag == "Player")
+        {
+            if(powerUpManager.IsEntityShielded(other.gameObject))
+                powerUpManager.RemovePowerUpFromEntity(other.gameObject, PowerUpType.Shield);
+            else
+                GameOver();
+        }
+    }
+
 }
