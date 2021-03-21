@@ -7,21 +7,19 @@ namespace ExtensionClass
 {
     public static class Extensions
     {
-        public static void IncreaseGravity(this Rigidbody body, float factor)
-        {
-            if (!ApproximatelyEquals(Math.Abs(body.velocity.y), 0))
-            {
-                var velocity = body.velocity;
-                velocity.y += Physics.gravity.y * factor * Time.deltaTime;
-                body.velocity = velocity;
-            }
-        }
-
         public static bool IsGrounded(this Rigidbody body, float distanceToGround)
         {
-            var startingPosition = body.transform.position;
-            startingPosition.y += 0.5f;
-            return Physics.Raycast(startingPosition, -Vector3.up, distanceToGround + 0.3f);
+            return Physics.CheckSphere(body.position, distanceToGround, body.gameObject.layer);
+        }
+
+        public static void Jump(this Rigidbody body, float jumpHeight)
+        {
+            body.AddForce(Vector3.up * Mathf.Sqrt(jumpHeight), ForceMode.VelocityChange);
+        }
+
+        public static void Slide(this Rigidbody body, float slideForce)
+        {
+            body.AddForce(body.transform.forward * slideForce, ForceMode.Acceleration);
         }
 
         public static bool ApproximatelyEquals(float a, float b)

@@ -1,18 +1,15 @@
 ﻿using GameLibrary;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using ExtensionClass;
-
+using TMPro;
 
 public class GameScript : MonoBehaviour
 {
-    public Text gamePausedLabel;
-    public Text gameOverLabel;
-    public Text pointCounterLabel;
-    public Text fpsCounterLabel;
+    public TextMeshProUGUI gamePausedLabel;
+    public TextMeshProUGUI gameOverLabel;
+    public TextMeshProUGUI pointCounterLabel;
+    public TextMeshProUGUI fpsCounterLabel;
 
     private GameObject player;
     private PowerUpManager powerUpManager;
@@ -52,7 +49,6 @@ public class GameScript : MonoBehaviour
         }
 
         powerUpManager.Update();
-        Debug.Log(powerUpManager.GetAllEntityPowerUps(player));
     }
 
     public void GameOver()
