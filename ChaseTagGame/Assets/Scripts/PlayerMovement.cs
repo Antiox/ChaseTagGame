@@ -3,34 +3,49 @@ using Cinemachine;
 using System;
 using ExtensionClass;
 using GameLibrary;
-
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GameLibrary
 {
 
     public class PlayerMovement : MonoBehaviour
     {
-        [InspectorName("Scripts")]
+        [Header("Scripts")]
         [SerializeField] private PlayerCamera playerCamera;
         [SerializeField] private PlayerInputs playerInputs;
         [SerializeField] private GameScript gameManagerScript;
 
-        public float MovementSpeed;
-        public float RunningMultiplier;
-        public float JumpHeight;
-        public float SlideForce;
-        public float distanceToGround = 0.3f;
-        public float groundDrag = 5f;
-        public float airDrag = 2f;
-        public float airResistance = 0.45f;
-        public Vector3 gravity = Vector3.down * 40f;
+        [Header("Movements")]
+        [SerializeField] private float MovementSpeed;
+        [SerializeField] private float RunningMultiplier;
+        [SerializeField] private float SlideForce;
+        [SerializeField] private float MaxSlopeAngle = 50f;
+
+        [Header("Jump")]
+        [SerializeField] private float JumpHeight;
+        [SerializeField] private float groundDrag;
+        [SerializeField] private float airDrag;
+        [SerializeField] private float airResistance;
+        [SerializeField] private Vector3 gravity;
+
+        [Header("Ground Detection")]
+        [SerializeField] private float groundCheckRadius;
+        [SerializeField] private float groundCheckOffset;
 
 
         private Rigidbody rigidBody;
         private Animator characterAnimator;
         private CapsuleCollider playerCollider;
         private Vector3 playerDirection;
+        private Vector3 lastPlayerDirection;
         private bool isGrounded;
+        private float slopeForce = 50f;
+        private float minAirTime = 0.2f;
+        private float currentAirTime;
+        private bool canWalkOnSlope;
+        private Vector3 playerMovement { get { return playerDirection * MovementSpeed; } }
+        private float CurrentRunningSpeed { get { return playerInputs.IsRunning ? RunningMultiplier : 1f; } }
 
 
         private void Awake()
@@ -48,48 +63,43 @@ namespace GameLibrary
             FaceCameraDirection();
             UpdateAnimatorVariables();
 
-            if (playerInputs.IsJumping && isGrounded)
+            if (playerInputs.IsJumping && isGrounded && canWalkOnSlope)
                 rigidBody.Jump(JumpHeight);
             else if (playerInputs.IsRunning && playerInputs.IsSlideTriggered && isGrounded && playerInputs.VerticalAxis > 0)
                 ProcessSlide();
 
 
             gameManagerScript.AddPoints(playerDirection.magnitude * Time.deltaTime);
+
+            if (playerDirection.magnitude > 0)
+                lastPlayerDirection = playerDirection;
         }
 
         private void FixedUpdate()
         {
-            isGrounded = rigidBody.IsGrounded(distanceToGround);
-            if (isGrounded)
-            {
-                rigidBody.drag = groundDrag;
-                rigidBody.AddForce(playerDirection.normalized * MovementSpeed * (playerInputs.IsRunning ? RunningMultiplier : 1f), ForceMode.Acceleration);
-            }
-            else
-            {
-                rigidBody.drag = airDrag;
-                rigidBody.AddForce(playerDirection.normalized * MovementSpeed * airResistance * (playerInputs.IsRunning ? RunningMultiplier : 1f) + gravity, ForceMode.Acceleration);
-            }
+            var slope = rigidBody.GetSlope(lastPlayerDirection);
+            isGrounded = rigidBody.IsGrounded(groundCheckRadius);
+            canWalkOnSlope = rigidBody.CanWalkOnSlope(slope, MaxSlopeAngle);
+            currentAirTime = isGrounded ? 0 : (currentAirTime + Time.deltaTime);
+            rigidBody.drag = isGrounded ? groundDrag * (playerInputs.IsMoving ? 1f : 4f) : airDrag;
+
+            var inAirPlayerMovement = playerMovement * airResistance * CurrentRunningSpeed + gravity;
+            var groundPlayerMovement = canWalkOnSlope ? (playerMovement * CurrentRunningSpeed) : playerMovement * CurrentRunningSpeed / 2f;
+
+            var slopeDownForce = (canWalkOnSlope ? -slope.Normal : Vector3.down) * slopeForce;
+            var frameForce = (isGrounded ? groundPlayerMovement : inAirPlayerMovement) + slopeDownForce;
+
+            if (frameForce.magnitude > 0)
+                rigidBody.AddForce(frameForce, ForceMode.Acceleration);
         }
-
-
-        private void OnCollisionEnter(Collision collision)
-        {
-
-        }
-        private void OnCollisionExit(Collision collision)
-        {
-
-        }
-
 
 
         private void UpdateAnimatorVariables()
         {
             characterAnimator.SetFloat("Speed", playerInputs.VerticalAxis * (playerInputs.IsRunning ? 2 : 1));
             characterAnimator.SetFloat("StrafeSpeed", playerInputs.HorizontalAxis * (playerInputs.IsRunning ? 2 : 1));
-            characterAnimator.SetBool("IsJumping", playerInputs.IsJumping);
-            characterAnimator.SetBool("IsGrounded", isGrounded);
+            characterAnimator.SetBool("IsJumping", playerInputs.IsJumping && canWalkOnSlope);
+            characterAnimator.SetBool("IsGrounded", currentAirTime <= minAirTime);
             characterAnimator.SetBool("IsSliding", playerInputs.IsSliding);
             characterAnimator.SetBool("IsBeginningSliding", playerInputs.IsSlideTriggered);
         }
@@ -107,13 +117,14 @@ namespace GameLibrary
         private void ProcessSlide()
         {
             rigidBody.Slide(SlideForce);
-
-            // Making the player collider smaller when sliding
+            ReduceColliderWhenSliding();
+        }
+        private void ReduceColliderWhenSliding()
+        {
             var newCenter = playerCollider.center;
             newCenter.y = playerInputs.IsSliding ? 0.3f : 0.9f;
             playerCollider.center = newCenter;
             playerCollider.height = newCenter.y * 2;
         }
     }
-
 }

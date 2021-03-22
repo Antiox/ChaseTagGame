@@ -21,7 +21,6 @@ public class EnemyScript : MonoBehaviour
     void Update()
     {
         navMeshAgent.SetDestination(target.transform.position);
-        Debug.Log(navMeshAgent.isOnNavMesh);
     }
 
     private void OnTriggerEnter(Collider other)

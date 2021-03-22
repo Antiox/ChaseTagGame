@@ -83,6 +83,5 @@ namespace GameLibrary
                     Entities.Remove(e.Key);
             }
         }
-
     }
 }

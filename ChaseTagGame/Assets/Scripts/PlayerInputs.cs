@@ -12,6 +12,7 @@ namespace GameLibrary
         public bool IsJumping { get; set; }
         public bool IsSlideTriggered { get; set; }
         public bool IsSliding { get; set; }
+        public bool IsMoving { get; set; }
 
 
         void Update()
@@ -22,6 +23,7 @@ namespace GameLibrary
             IsJumping = Input.GetButtonDown("Jump");
             IsSliding = Input.GetButton("Slide");
             IsSlideTriggered = Input.GetButtonDown("Slide");
+            IsMoving = HorizontalAxis != 0 || VerticalAxis != 0 || IsSliding;
         }
     }
 }
