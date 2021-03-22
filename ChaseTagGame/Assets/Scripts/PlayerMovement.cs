@@ -64,15 +64,15 @@ namespace GameLibrary
             UpdateAnimatorVariables();
 
             if (playerInputs.IsJumping && isGrounded && canWalkOnSlope)
-                rigidBody.Jump(JumpHeight);
+                ProcessJump();
             else if (playerInputs.IsRunning && playerInputs.IsSlideTriggered && isGrounded && playerInputs.VerticalAxis > 0)
                 ProcessSlide();
 
 
             gameManagerScript.AddPoints(playerDirection.magnitude * Time.deltaTime);
 
-            if (playerDirection.magnitude > 0)
-                lastPlayerDirection = playerDirection;
+
+            lastPlayerDirection = playerDirection.magnitude > 0 ? playerDirection : lastPlayerDirection;
         }
 
         private void FixedUpdate()
@@ -81,11 +81,10 @@ namespace GameLibrary
             isGrounded = rigidBody.IsGrounded(groundCheckRadius);
             canWalkOnSlope = rigidBody.CanWalkOnSlope(slope, MaxSlopeAngle);
             currentAirTime = isGrounded ? 0 : (currentAirTime + Time.deltaTime);
-            rigidBody.drag = isGrounded ? groundDrag * (playerInputs.IsMoving ? 1f : 4f) : airDrag;
+            rigidBody.drag = GetCurrentDrag();
 
             var inAirPlayerMovement = playerMovement * airResistance * CurrentRunningSpeed + gravity;
             var groundPlayerMovement = canWalkOnSlope ? (playerMovement * CurrentRunningSpeed) : playerMovement * CurrentRunningSpeed / 2f;
-
             var slopeDownForce = (canWalkOnSlope ? -slope.Normal : Vector3.down) * slopeForce;
             var frameForce = (isGrounded ? groundPlayerMovement : inAirPlayerMovement) + slopeDownForce;
 
@@ -118,6 +117,23 @@ namespace GameLibrary
         {
             rigidBody.Slide(SlideForce);
             ReduceColliderWhenSliding();
+        }
+        private void ProcessJump()
+        {
+            rigidBody.Jump(JumpHeight);
+        }
+        private float GetCurrentDrag()
+        {
+            if (!isGrounded)
+                return airDrag;
+            else if (isGrounded && !playerInputs.IsMoving)
+                return groundDrag * 4f;
+            else if (isGrounded && playerInputs.IsSliding)
+                return groundDrag / 3f;
+            else if (isGrounded && playerInputs.IsMoving)
+                return groundDrag;
+
+            return 0f;
         }
         private void ReduceColliderWhenSliding()
         {
