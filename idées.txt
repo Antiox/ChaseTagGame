@@ -1,10 +1,10 @@
 - Spawn de plus en plus d'ennemis au fil du temps
 
 - Power Up
-	- Bouclier : Permet de se faire toucher une fois, plus se casse
+	- Bouclier : Permet de se faire toucher une fois, puis se casse
 	- Vitesse augmentée
 	- Tue / Freeze un ennemi sur le terrain
-	- 
+	- Grimpe aux murs plus haut / longtemps
 	
 - Power Up Ennemi
 	- L'ennemi génère une trainée de brouillard
@@ -12,7 +12,14 @@
 	- Ralenti le joueur
 	- Traverse les obstacles
 	- Peut se téléporter
+	- Se transforme en nuée de fusée qui se dirigent vers le joueur pour le stun / blesser / ...
 	
 - Faire des ennemis spéciaux
+	- Ennemi très lent, mais qui lance des projectiles. Si le joueur est touché, il meurt
+	- Ennemi très très rapide, mais qui meurt après un sprint de X secondes
 
-- 
+- Objets inatteignable sans le powerup de grimpe
+- Classement
+- Décors dynamique : piston qui poussent les joueurs, ...
+
+- Système de grimpe sur les murs et bordures comme Apex / BL3
