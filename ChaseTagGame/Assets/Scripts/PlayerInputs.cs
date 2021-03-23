@@ -6,13 +6,14 @@ namespace GameLibrary
 {
     public class PlayerInputs : MonoBehaviour
     {
-        public float HorizontalAxis { get; set; }
-        public float VerticalAxis { get; set; }
-        public bool IsRunning { get; set; }
-        public bool IsJumping { get; set; }
-        public bool IsSlideTriggered { get; set; }
-        public bool IsSliding { get; set; }
-        public bool IsMoving { get; set; }
+        public float HorizontalAxis { get; private set; }
+        public float VerticalAxis { get; private set; }
+        public bool IsRunning { get; private set; }
+        public bool IsJumping { get; private set; }
+        public bool IsHoldingJump { get; private set; }
+        public bool IsSlideTriggered { get; private set; }
+        public bool IsSliding { get; private set; }
+        public bool IsMoving { get; private set; }
 
 
         void Update()
@@ -21,9 +22,10 @@ namespace GameLibrary
             VerticalAxis = Input.GetAxisRaw("Vertical");
             IsRunning = Input.GetButton("Run");
             IsJumping = Input.GetButtonDown("Jump");
+            IsHoldingJump = Input.GetButton("Jump");
             IsSliding = Input.GetButton("Slide");
             IsSlideTriggered = Input.GetButtonDown("Slide");
-            IsMoving = HorizontalAxis != 0 || VerticalAxis != 0 || IsSliding;
+            IsMoving = HorizontalAxis != 0 || VerticalAxis != 0;
         }
     }
 }

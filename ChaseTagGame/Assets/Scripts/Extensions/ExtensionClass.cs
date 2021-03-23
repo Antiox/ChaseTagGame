@@ -13,6 +13,15 @@ namespace ExtensionClass
             return GetColliders(body, groundCheckRadius).Length > 0;
         }
 
+        public static bool IsFacingWall(this Rigidbody body, Transform castTransform)
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(castTransform.position, castTransform.forward, out hit, 0.7f, body.gameObject.layer))
+                return Vector3.Angle(hit.normal, -castTransform.forward) <= 40;
+
+            return false;
+        }
+
         public static Slope GetSlope(this Rigidbody body, Vector3 forwardDirection)
         {
             var slope = new Slope();
@@ -31,6 +40,9 @@ namespace ExtensionClass
                 {
                     slope.Angle = Vector3.Angle(hitForward.normal, Vector3.up);
                     slope.Normal = hitDown.normal;
+
+                    if (slope.Angle == 90)
+                        slope = new Slope() { Angle = 0, Normal = Vector3.up };
                 }
             }
 

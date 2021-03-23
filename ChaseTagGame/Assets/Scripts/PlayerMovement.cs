@@ -11,6 +11,8 @@ namespace GameLibrary
 
     public class PlayerMovement : MonoBehaviour
     {
+        #region Variables
+
         [Header("Scripts")]
         [SerializeField] private PlayerCamera playerCamera;
         [SerializeField] private PlayerInputs playerInputs;
@@ -21,6 +23,11 @@ namespace GameLibrary
         [SerializeField] private float RunningMultiplier;
         [SerializeField] private float SlideForce;
         [SerializeField] private float MaxSlopeAngle = 50f;
+        private float slopeForce = 50f;
+        private bool canWalkOnSlope;
+        private float CurrentRunningSpeed { get { return playerInputs.IsRunning ? RunningMultiplier : 1f; } }
+        private Vector3 playerMovement { get { return playerDirection * MovementSpeed; } }
+
 
         [Header("Jump")]
         [SerializeField] private float JumpHeight;
@@ -28,27 +35,31 @@ namespace GameLibrary
         [SerializeField] private float airDrag;
         [SerializeField] private float airResistance;
         [SerializeField] private Vector3 gravity;
+        private float minAirTime = 0.2f;
+        private float currentAirTime;
+        private bool isGrounded;
+
 
         [Header("Ground Detection")]
         [SerializeField] private float groundCheckRadius;
         [SerializeField] private float groundCheckOffset;
+        private Slope currentSlope;
 
+        [Header("Climbing")]
+        [SerializeField] private Transform faceCaster;
+        private bool isAgainstWall;
+        private bool isClimbing;
+        private bool reachedTop;
 
         private Rigidbody rigidBody;
         private Animator characterAnimator;
         private CapsuleCollider playerCollider;
         private Vector3 playerDirection;
         private Vector3 lastPlayerDirection;
-        private bool isGrounded;
-        private float slopeForce = 50f;
-        private float minAirTime = 0.2f;
-        private float currentAirTime;
-        private bool canWalkOnSlope;
-        private Vector3 playerMovement { get { return playerDirection * MovementSpeed; } }
-        private float CurrentRunningSpeed { get { return playerInputs.IsRunning ? RunningMultiplier : 1f; } }
 
+        #endregion
 
-        private void Awake()
+        private void Start()
         {
             rigidBody = GetComponent<Rigidbody>();
             characterAnimator = GetComponentInChildren<Animator>();
@@ -56,6 +67,7 @@ namespace GameLibrary
             gameManagerScript = GameObject.FindGameObjectWithTag(GameTags.GameManager).GetComponent<GameScript>();
             playerCamera = GetComponent<PlayerCamera>();
             playerInputs = GetComponent<PlayerInputs>();
+            faceCaster = GameObject.Find("FaceLevelDetector").GetComponent<Transform>();
         }
 
         void Update()
@@ -63,11 +75,11 @@ namespace GameLibrary
             FaceCameraDirection();
             UpdateAnimatorVariables();
 
+
             if (playerInputs.IsJumping && isGrounded && canWalkOnSlope)
                 ProcessJump();
             else if (playerInputs.IsRunning && playerInputs.IsSlideTriggered && isGrounded && playerInputs.VerticalAxis > 0)
                 ProcessSlide();
-
 
             gameManagerScript.AddPoints(playerDirection.magnitude * Time.deltaTime);
 
@@ -77,30 +89,32 @@ namespace GameLibrary
 
         private void FixedUpdate()
         {
-            var slope = rigidBody.GetSlope(lastPlayerDirection);
+            currentSlope = rigidBody.GetSlope(lastPlayerDirection);
             isGrounded = rigidBody.IsGrounded(groundCheckRadius);
-            canWalkOnSlope = rigidBody.CanWalkOnSlope(slope, MaxSlopeAngle);
+            canWalkOnSlope = rigidBody.CanWalkOnSlope(currentSlope, MaxSlopeAngle);
             currentAirTime = isGrounded ? 0 : (currentAirTime + Time.deltaTime);
             rigidBody.drag = GetCurrentDrag();
+            isAgainstWall = rigidBody.IsFacingWall(faceCaster);
+            isClimbing = isAgainstWall && !isGrounded && rigidBody.velocity.magnitude > 0 && playerInputs.IsHoldingJump;
+            reachedTop = false;
 
-            var inAirPlayerMovement = playerMovement * airResistance * CurrentRunningSpeed + gravity;
-            var groundPlayerMovement = canWalkOnSlope ? (playerMovement * CurrentRunningSpeed) : playerMovement * CurrentRunningSpeed / 2f;
-            var slopeDownForce = (canWalkOnSlope ? -slope.Normal : Vector3.down) * slopeForce;
-            var frameForce = (isGrounded ? groundPlayerMovement : inAirPlayerMovement) + slopeDownForce;
 
+            var frameForce = DetermineFinalFrameForce();
             if (frameForce.magnitude > 0)
                 rigidBody.AddForce(frameForce, ForceMode.Acceleration);
         }
-
 
         private void UpdateAnimatorVariables()
         {
             characterAnimator.SetFloat("Speed", playerInputs.VerticalAxis * (playerInputs.IsRunning ? 2 : 1));
             characterAnimator.SetFloat("StrafeSpeed", playerInputs.HorizontalAxis * (playerInputs.IsRunning ? 2 : 1));
             characterAnimator.SetBool("IsJumping", playerInputs.IsJumping && canWalkOnSlope);
+            characterAnimator.SetBool("IsHoldingJump", playerInputs.IsHoldingJump);
             characterAnimator.SetBool("IsGrounded", currentAirTime <= minAirTime);
             characterAnimator.SetBool("IsSliding", playerInputs.IsSliding);
             characterAnimator.SetBool("IsBeginningSliding", playerInputs.IsSlideTriggered);
+            characterAnimator.SetBool("IsClimbing", isClimbing);
+            characterAnimator.SetFloat("ClimbingSpeed", Mathf.Clamp(rigidBody.velocity.y, -2, 2));
         }
         private void FaceCameraDirection()
         {
@@ -110,7 +124,7 @@ namespace GameLibrary
             var cameraSideDirection = Quaternion.AngleAxis(90, Vector3.up) * cameraFrontDirection;
             playerDirection = (cameraFrontDirection * playerInputs.VerticalAxis + cameraSideDirection * playerInputs.HorizontalAxis).normalized;
 
-            if (playerDirection.magnitude > 0)
+            if (playerDirection.magnitude > 0 && !isClimbing)
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(cameraFrontDirection), 25f * Time.deltaTime);
         }
         private void ProcessSlide()
@@ -141,6 +155,27 @@ namespace GameLibrary
             newCenter.y = playerInputs.IsSliding ? 0.3f : 0.9f;
             playerCollider.center = newCenter;
             playerCollider.height = newCenter.y * 2;
+        }
+        private Vector3 DetermineFinalFrameForce()
+        {
+            var inAirPlayerMovement = playerMovement * airResistance + gravity;
+            var groundPlayerMovement = canWalkOnSlope ? (playerMovement * CurrentRunningSpeed) : playerMovement / 2f;
+            var slopeDownForce = (canWalkOnSlope ? -currentSlope.Normal : Vector3.down) * slopeForce;
+            var climbingForce = isClimbing ? Vector3.up * 8f : Vector3.zero;
+
+            //var frameForce = (isGrounded ? groundPlayerMovement : inAirPlayerMovement) + (currentSlope.IsOnSlope ? slopeDownForce : Vector3.zero);
+            var frameForce =Vector3.zero;
+
+            if (isGrounded)
+                frameForce += groundPlayerMovement;
+            if(!isGrounded)
+                frameForce += inAirPlayerMovement;
+            if (currentSlope.IsOnSlope)
+                frameForce += slopeDownForce;
+            if (isClimbing)
+                frameForce = climbingForce;
+
+            return frameForce;
         }
     }
 }

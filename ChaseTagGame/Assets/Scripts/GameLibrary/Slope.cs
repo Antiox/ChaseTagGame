@@ -6,6 +6,6 @@ namespace GameLibrary
     {
         public float Angle { get; set; }
         public Vector3 Normal { get; set; }
-        public bool IsOnSlope { get { return Normal != Vector3.up && Normal != Vector3.zero; } }
+        public bool IsOnSlope { get { return Angle != 0 && Angle != 90; } }
     }
 }
