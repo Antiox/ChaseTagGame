@@ -5,46 +5,51 @@ using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 using TMPro;
+using GameLibrary;
 
 public class PistonScript : MonoBehaviour
 {
     public GameObject target;
-    private float speed = 10f;
-    private float maxDistance = 2f;
+
+    [Header("Expansion")]
+    [SerializeField] private float expandSpeed = 5f;
+    [SerializeField] private float maxExpansion = 2f;
+    [Header("Retraction")]
+    [SerializeField] private float retractSpeed = 0.2f;
+    [SerializeField] private float delayBeforeRetract = 10f;
+
+
+    private bool isCoolingDown;
     private Rigidbody piston;
     private Vector3 initialPosition;
-    public LineRenderer lineRenderer;
-    public int maxIterations = 10000;
-    public int maxSegmentCount = 300;
-    public float segmentStepModulo = 10f;
-    private Vector3[] segments;
-    private int numSegments = 0;
+    private Vector3 expandedPosition;
+    private PlayerMovement playerMovementScript;
 
     void Start()
     {
         piston = GetComponent<Rigidbody>();
         initialPosition = piston.position;
+        expandedPosition = initialPosition + piston.transform.forward * maxExpansion;
+        isCoolingDown = false;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerStay(Collider other)
     {
-        float newForward = Mathf.Sin(Time.time * speed);
-        piston.MovePosition(initialPosition + piston.transform.forward * newForward * maxDistance);
-    }
+        if(other.gameObject.tag == GameTags.Player && !isCoolingDown)
+        {
+            playerMovementScript = other.gameObject.GetComponent<PlayerMovement>();
+            var rigidbody = other.gameObject.GetComponent<Rigidbody>();
+            rigidbody.velocity = Vector3.zero;
+            rigidbody.drag = 2;
 
-    private void OnTriggerEnter(Collider other)
-    {
-        var rigidbody = other.gameObject.GetComponent<Rigidbody>();
-        rigidbody.velocity = Vector3.zero;
-        rigidbody.drag = 2;
-        rigidbody.MovePosition(rigidbody.position + piston.transform.forward + Vector3.up);
-        var force = GetBallisticForce(rigidbody.position, target.transform.position, 50f);
-        var multiplier = GetBestFitForce(rigidbody.position, target.transform.position, force, rigidbody.mass, rigidbody.drag);
-        SimulatePath(rigidbody.position, force * multiplier, rigidbody.mass, rigidbody.drag);
-        Draw();
+            var force = GetBallisticForce(rigidbody.position, target.transform.position, 50f);
+            var multiplier = GetBestFitForce(rigidbody.position, target.transform.position, force, rigidbody.mass, rigidbody.drag);
 
-        rigidbody.velocity = force * multiplier;
+            StartCoroutine(DeactivateCollider(other));
+            StartCoroutine(Expand(initialPosition, expandedPosition));
+
+            rigidbody.velocity = force * multiplier;
+        }
     }
 
 
@@ -62,7 +67,6 @@ public class PistonScript : MonoBehaviour
         return velocity * direction.normalized;
     }
 
-
     public float GetBestFitForce(Vector3 initialPosition, Vector3 target, Vector3 forceDirection, float mass, float drag)
     {
         var paths = new List<Vector3>();
@@ -79,6 +83,12 @@ public class PistonScript : MonoBehaviour
 
     public Vector3 SimulatePath(Vector3 initialPosition, Vector3 forceDirection, float mass, float drag)
     {
+        var maxIterations = 10000;
+        var maxSegmentCount = 300;
+        var segmentStepModulo = 10f;
+        var numSegments = 0;
+        var segments = new Vector3[numSegments];
+
         var timestep = Time.fixedDeltaTime;
         var stepDrag = 1 - drag * timestep;
         var velocity = forceDirection / mass * timestep;
@@ -107,22 +117,40 @@ public class PistonScript : MonoBehaviour
         return segments[numSegments - 1];
     }
 
-    private void Draw()
+
+    private IEnumerator DeactivateCollider(Collider c)
     {
-        Color startColor = Color.magenta;
-        Color endColor = Color.magenta;
-        startColor.a = 1f;
-        endColor.a = 1f;
+        c.enabled = false;
+        playerMovementScript.IsBumped = true;
+        yield return new WaitForSeconds(0.2f);
+        playerMovementScript.IsBumped = false;
+        c.enabled = true;
+    }
 
-        lineRenderer.transform.position = segments[0];
+    private IEnumerator Expand(Vector3 start, Vector3 target)
+    {
+        isCoolingDown = true;
 
-        lineRenderer.startColor = startColor;
-        lineRenderer.endColor = endColor;
-
-        lineRenderer.positionCount = numSegments;
-        for (int i = 0; i < numSegments; i++)
+        float t = 0;
+        while (t <= 1)
         {
-            lineRenderer.SetPosition(i, lineRenderer.transform.InverseTransformPoint(segments[i]));
+            t += Time.fixedDeltaTime * expandSpeed;
+            piston.MovePosition(Vector3.Lerp(start, target, t));
+
+            yield return new WaitForEndOfFrame();
         }
+
+        yield return new WaitForSeconds(delayBeforeRetract);
+
+        t = 0;
+        while (t <= 1)
+        {
+            t += Time.fixedDeltaTime * retractSpeed;
+            piston.MovePosition(Vector3.Lerp(target, start, t));
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        isCoolingDown = false;
     }
 }

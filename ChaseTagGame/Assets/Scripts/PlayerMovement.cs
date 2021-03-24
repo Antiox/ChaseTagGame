@@ -38,6 +38,7 @@ namespace GameLibrary
         private float minAirTime = 0.2f;
         private float currentAirTime;
         private bool isGrounded;
+        public bool IsBumped { get; set; }
 
 
         [Header("Ground Detection")]
@@ -56,6 +57,7 @@ namespace GameLibrary
         private float maxClimbTime = 3f;
         private float climbingTimer;
         private Vector3 climbEndDestination;
+        private Vector3 frontWallNormal;
 
         private Rigidbody rigidBody;
         private Animator characterAnimator;
@@ -121,9 +123,10 @@ namespace GameLibrary
         private void FixedUpdate()
         {
             currentSlope = rigidBody.GetSlope(lastPlayerDirection);
-            isGrounded = rigidBody.IsGrounded(groundCheckRadius);
+            isGrounded = rigidBody.IsGrounded(groundCheckRadius) && playerCollider.enabled;
             canWalkOnSlope = rigidBody.CanWalkOnSlope(currentSlope, MaxSlopeAngle);
             isAgainstWall = rigidBody.IsFacingWall(faceCaster);
+            frontWallNormal = isAgainstWall ? rigidBody.GetFacingWallNormal(faceCaster) : Vector3.zero;
 
             var frameForce = DetermineFinalFrameForce();
             if (frameForce.magnitude > 0)
@@ -153,6 +156,8 @@ namespace GameLibrary
 
             if (playerDirection.magnitude > 0 && !isClimbing && !climbEndInProgress)
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(cameraFrontDirection), 25f * Time.deltaTime);
+            else if(isClimbing)
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(-frontWallNormal), 25f * Time.deltaTime);
         }
         private void ProcessSlide()
         {
@@ -165,6 +170,8 @@ namespace GameLibrary
         }
         private float GetCurrentDrag()
         {
+            if (IsBumped)
+                return airDrag;
             if (!isGrounded)
                 return airDrag;
             else if (isGrounded && !playerInputs.IsMoving)

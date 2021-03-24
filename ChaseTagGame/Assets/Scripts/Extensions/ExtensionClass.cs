@@ -15,11 +15,25 @@ namespace ExtensionClass
 
         public static bool IsFacingWall(this Rigidbody body, Transform castTransform)
         {
+            return GetAngleFromWall(body, castTransform) <= 40;
+        }
+
+        public static float GetAngleFromWall(this Rigidbody body, Transform castTransform)
+        {
             RaycastHit hit;
             if (Physics.Raycast(castTransform.position, castTransform.forward, out hit, 0.7f, body.gameObject.layer))
-                return Vector3.Angle(hit.normal, -castTransform.forward) <= 40;
+                return Vector3.Angle(hit.normal, -castTransform.forward);
 
-            return false;
+            return 999;
+        }
+
+        public static Vector3 GetFacingWallNormal(this Rigidbody body, Transform castTransform)
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(castTransform.position, castTransform.forward, out hit, 0.7f, body.gameObject.layer))
+                return hit.normal;
+
+            return Vector3.zero;
         }
 
         public static Slope GetSlope(this Rigidbody body, Vector3 forwardDirection)
