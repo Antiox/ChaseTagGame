@@ -10,7 +10,7 @@ namespace ExtensionClass
     {
         public static bool IsGrounded(this Rigidbody body, float groundCheckRadius)
         {
-            return GetColliders(body, groundCheckRadius).Length > 0;
+            return Physics.CheckSphere(body.transform.position + ((groundCheckRadius - 0.05f) * body.transform.up), groundCheckRadius, body.gameObject.layer, QueryTriggerInteraction.Ignore);
         }
 
         public static bool IsFacingWall(this Rigidbody body, Transform castTransform)

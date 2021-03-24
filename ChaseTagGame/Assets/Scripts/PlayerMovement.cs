@@ -46,10 +46,16 @@ namespace GameLibrary
         private Slope currentSlope;
 
         [Header("Climbing")]
-        [SerializeField] private Transform faceCaster;
+        private Transform faceCaster;
         private bool isAgainstWall;
         private bool isClimbing;
+        private bool previousClimbingState;
         private bool reachedTop;
+        private bool climbEndInProgress;
+        private float climbEndTimer;
+        private float maxClimbTime = 3f;
+        private float climbingTimer;
+        private Vector3 climbEndDestination;
 
         private Rigidbody rigidBody;
         private Animator characterAnimator;
@@ -81,10 +87,35 @@ namespace GameLibrary
             else if (playerInputs.IsRunning && playerInputs.IsSlideTriggered && isGrounded && playerInputs.VerticalAxis > 0)
                 ProcessSlide();
 
+            if (reachedTop)
+            {
+                climbEndDestination = transform.position + transform.forward *0.6f + transform.up * 1.6f;
+                playerCollider.enabled = false;
+            }
+            if (climbEndInProgress)
+                ProcessEndOfClimb();
+
             gameManagerScript.AddPoints(playerDirection.magnitude * Time.deltaTime);
-
-
             lastPlayerDirection = playerDirection.magnitude > 0 ? playerDirection : lastPlayerDirection;
+            climbEndTimer += climbEndInProgress ? Time.deltaTime : 0f;
+            climbingTimer += isClimbing ? Time.deltaTime : 0f;
+            currentAirTime = isGrounded ? 0 : (currentAirTime + Time.deltaTime);
+            climbEndInProgress = reachedTop ? true : climbEndInProgress;
+            previousClimbingState = isClimbing;
+            isClimbing = isAgainstWall && !isGrounded && rigidBody.velocity.magnitude > 0 && playerInputs.IsHoldingJump && climbingTimer <= maxClimbTime;
+            reachedTop = previousClimbingState && !isClimbing && !isGrounded && playerInputs.IsHoldingJump && climbingTimer <= maxClimbTime;
+            rigidBody.drag = GetCurrentDrag();
+
+            if (isGrounded)
+                climbingTimer = 0;
+
+            if (transform.position == climbEndDestination)
+            {
+                climbEndInProgress = false;
+                playerCollider.enabled = true;
+                reachedTop = false;
+                climbEndTimer = 0;
+            }
         }
 
         private void FixedUpdate()
@@ -92,12 +123,7 @@ namespace GameLibrary
             currentSlope = rigidBody.GetSlope(lastPlayerDirection);
             isGrounded = rigidBody.IsGrounded(groundCheckRadius);
             canWalkOnSlope = rigidBody.CanWalkOnSlope(currentSlope, MaxSlopeAngle);
-            currentAirTime = isGrounded ? 0 : (currentAirTime + Time.deltaTime);
-            rigidBody.drag = GetCurrentDrag();
             isAgainstWall = rigidBody.IsFacingWall(faceCaster);
-            isClimbing = isAgainstWall && !isGrounded && rigidBody.velocity.magnitude > 0 && playerInputs.IsHoldingJump;
-            reachedTop = false;
-
 
             var frameForce = DetermineFinalFrameForce();
             if (frameForce.magnitude > 0)
@@ -108,13 +134,14 @@ namespace GameLibrary
         {
             characterAnimator.SetFloat("Speed", playerInputs.VerticalAxis * (playerInputs.IsRunning ? 2 : 1));
             characterAnimator.SetFloat("StrafeSpeed", playerInputs.HorizontalAxis * (playerInputs.IsRunning ? 2 : 1));
+            characterAnimator.SetFloat("ClimbingSpeed", Mathf.Clamp(rigidBody.velocity.y, -10, 5));
             characterAnimator.SetBool("IsJumping", playerInputs.IsJumping && canWalkOnSlope);
             characterAnimator.SetBool("IsHoldingJump", playerInputs.IsHoldingJump);
             characterAnimator.SetBool("IsGrounded", currentAirTime <= minAirTime);
             characterAnimator.SetBool("IsSliding", playerInputs.IsSliding);
             characterAnimator.SetBool("IsBeginningSliding", playerInputs.IsSlideTriggered);
             characterAnimator.SetBool("IsClimbing", isClimbing);
-            characterAnimator.SetFloat("ClimbingSpeed", Mathf.Clamp(rigidBody.velocity.y, -2, 2));
+            characterAnimator.SetBool("ClimbedMaxTime", climbingTimer >= maxClimbTime);
         }
         private void FaceCameraDirection()
         {
@@ -124,7 +151,7 @@ namespace GameLibrary
             var cameraSideDirection = Quaternion.AngleAxis(90, Vector3.up) * cameraFrontDirection;
             playerDirection = (cameraFrontDirection * playerInputs.VerticalAxis + cameraSideDirection * playerInputs.HorizontalAxis).normalized;
 
-            if (playerDirection.magnitude > 0 && !isClimbing)
+            if (playerDirection.magnitude > 0 && !isClimbing && !climbEndInProgress)
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(cameraFrontDirection), 25f * Time.deltaTime);
         }
         private void ProcessSlide()
@@ -147,7 +174,7 @@ namespace GameLibrary
             else if (isGrounded && playerInputs.IsMoving)
                 return groundDrag;
 
-            return 0f;
+            return 2f;
         }
         private void ReduceColliderWhenSliding()
         {
@@ -161,9 +188,7 @@ namespace GameLibrary
             var inAirPlayerMovement = playerMovement * airResistance + gravity;
             var groundPlayerMovement = canWalkOnSlope ? (playerMovement * CurrentRunningSpeed) : playerMovement / 2f;
             var slopeDownForce = (canWalkOnSlope ? -currentSlope.Normal : Vector3.down) * slopeForce;
-            var climbingForce = isClimbing ? Vector3.up * 8f : Vector3.zero;
-
-            //var frameForce = (isGrounded ? groundPlayerMovement : inAirPlayerMovement) + (currentSlope.IsOnSlope ? slopeDownForce : Vector3.zero);
+            var climbingForce = isClimbing ? Vector3.up * 8f * (maxClimbTime - climbingTimer) / maxClimbTime : Vector3.zero;
             var frameForce =Vector3.zero;
 
             if (isGrounded)
@@ -174,8 +199,17 @@ namespace GameLibrary
                 frameForce += slopeDownForce;
             if (isClimbing)
                 frameForce = climbingForce;
+            if (climbEndInProgress)
+            {
+                frameForce = Vector3.zero;
+                rigidBody.velocity = Vector3.zero;
+            }
 
             return frameForce;
+        }
+        private void ProcessEndOfClimb()
+        {
+            transform.position = Vector3.Lerp(transform.position, climbEndDestination, climbEndTimer / 2f);
         }
     }
 }
