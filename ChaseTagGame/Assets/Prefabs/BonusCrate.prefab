@@ -42,7 +42,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2371643588270855117}
   serializedVersion: 2
-  m_Mass: 10
+  m_Mass: 0.1
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
@@ -72,7 +72,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2371643588270855117}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72c36d0ffa7d0eb4e80f0142b5849380, type: 3}
+  m_Script: {fileID: 11500000, guid: fa784d0f9b968e94aaf18757e0c32011, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   explosionParticles: {fileID: 1025285306637258, guid: d8f0099df63275647a8bcf646df1ca00,

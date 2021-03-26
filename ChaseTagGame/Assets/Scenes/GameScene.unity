@@ -416,7 +416,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 119391286}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 1.5, y: 1, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 317497213}
@@ -433,8 +433,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2.6, y: 2.7, z: 1}
-  m_Center: {x: 1.5, y: 1.32, z: 0.44}
+  m_Size: {x: 1, y: 2, z: 2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!43 &140555373
 Mesh:
   m_ObjectHideFlags: 0
@@ -1483,7 +1483,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 288083651}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8549a4b4348040340bc9897eeee6674e, type: 3}
+  m_Script: {fileID: 11500000, guid: 34815a1a5d3b6c04b880bda71e8772b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!43 &291647933
@@ -1697,14 +1697,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 317497207}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b831930c967348a4bbb41e1960468d01, type: 3}
+  m_Script: {fileID: 11500000, guid: 2b63e6d43e8c96c47b73b871c15c2378, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 706272878}
   expandSpeed: 5
   maxExpansion: 2
   retractSpeed: 0.2
-  delayBeforeRetract: 10
+  delayBeforeRetract: 1
 --- !u!33 &317497210
 MeshFilter:
   m_ObjectHideFlags: 10
@@ -2399,7 +2399,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 427959072}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1a8e3bec315db8468689d20eab65d7b, type: 3}
+  m_Script: {fileID: 11500000, guid: 11483ea0a4e30ad4fa4ea18454755dcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   gamePausedLabel: {fileID: 744439498}
@@ -3039,12 +3039,12 @@ PrefabInstance:
     - target: {fileID: 3537957930505353558, guid: 34615e7f5c5179444bac8ec408cd583e,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.0000000042832564
+      value: -0.0000000042832555
       objectReference: {fileID: 0}
     - target: {fileID: 3537957930505353558, guid: 34615e7f5c5179444bac8ec408cd583e,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -3.9678907e-10
+      value: 3.96789e-10
       objectReference: {fileID: 0}
     - target: {fileID: 4214768604881513047, guid: 34615e7f5c5179444bac8ec408cd583e,
         type: 3}
@@ -3438,7 +3438,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 653862784}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc2f6d73bb75ea24ea6f3442b1a0c26b, type: 3}
+  m_Script: {fileID: 11500000, guid: fca557da60492aa46a854a8b052f720f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   inputs: {fileID: 653862786}
@@ -3451,7 +3451,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 653862784}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1350992d083311342b94a6aa86dbe6dc, type: 3}
+  m_Script: {fileID: 11500000, guid: da0f26f44d065774aa645610e6120406, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &653862788
@@ -3463,7 +3463,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 653862784}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 251f9eb80c4a5ed47beb4ea6d70ddf78, type: 3}
+  m_Script: {fileID: 11500000, guid: 83cde9f8bd091924a95a654d10b8cadb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   playerCamera: {fileID: 653862785}
@@ -3603,7 +3603,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 706272878}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.84, y: 3.85, z: 19.47}
+  m_LocalPosition: {x: -6.77, y: 4, z: 20.95}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1157548812}
@@ -3638,13 +3638,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 743658787}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dac61f8d9e008f644843d7e8320c75cb, type: 3}
+  m_Script: {fileID: 11500000, guid: bef47d6e70b611b46b9ef0ca0a946c88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawningObject: {fileID: 2371643588270855117, guid: d1201b903f68b4b4386c9f9445564607,
+  objectToSpawn: {fileID: 2371643588270855117, guid: d1201b903f68b4b4386c9f9445564607,
     type: 3}
-  targetTransform: {fileID: 653862790}
-  spawnTimer: 2
+  targetLocation: {fileID: 653862790}
+  spawnDelay: 2
   spawnAngle: 70
 --- !u!23 &743658789
 MeshRenderer:

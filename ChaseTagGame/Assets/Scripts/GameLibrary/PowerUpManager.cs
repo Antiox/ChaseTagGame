@@ -7,10 +7,9 @@ using UnityEngine;
 
 namespace GameLibrary
 {
-    public class PowerUpManager
+    public class PowerUpManager : Singleton<PowerUpManager>
     {
         public Dictionary<GameObject, List<PowerUp>> Entities { get; set; } = new Dictionary<GameObject, List<PowerUp>>();
-
 
         public void AddEntity(GameObject entity)
         {
