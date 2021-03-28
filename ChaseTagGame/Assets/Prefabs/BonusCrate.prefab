@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2371643588270855105}
   m_Layer: 8
   m_Name: BonusCrate
-  m_TagString: Untagged
+  m_TagString: PowerUp
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -49,7 +49,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 3
 --- !u!65 &2371643588270855116
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -77,7 +77,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   explosionParticles: {fileID: 1025285306637258, guid: d8f0099df63275647a8bcf646df1ca00,
     type: 3}
-  powerUp: {fileID: 5553750832791751478, guid: 85422af4fa60bf14eb55b19ad007a61d, type: 3}
+  PossiblePowerUps:
+  - {fileID: 5553750832791751478, guid: 85422af4fa60bf14eb55b19ad007a61d, type: 3}
+  - {fileID: 5553750832791751478, guid: 711787627795aca4698cd499c1e15292, type: 3}
+  - {fileID: 5553750832791751478, guid: e8e03671c20ab6a4387c3f8205fa465a, type: 3}
 --- !u!1001 &2371643588074989439
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -15,7 +15,6 @@ namespace GameLibrary
         [Header("Scripts")]
         [SerializeField] private PlayerCamera playerCamera;
         [SerializeField] private PlayerInputs playerInputs;
-        [SerializeField] private GameScript gameManagerScript;
 
         [Header("Movements")]
         [SerializeField] private float MovementSpeed;
@@ -66,12 +65,11 @@ namespace GameLibrary
 
         #endregion
 
-        private void Start()
+        void Start()
         {
             rigidBody = GetComponent<Rigidbody>();
             characterAnimator = GetComponentInChildren<Animator>();
             playerCollider = GetComponent<CapsuleCollider>();
-            gameManagerScript = GameObject.FindGameObjectWithTag(GameTags.GameManager).GetComponent<GameScript>();
             playerCamera = GetComponent<PlayerCamera>();
             playerInputs = GetComponent<PlayerInputs>();
             faceCaster = GameObject.Find("FaceLevelDetector").GetComponent<Transform>();
@@ -101,7 +99,7 @@ namespace GameLibrary
             climbEndTimer += climbEndInProgress ? Time.deltaTime : 0f;
             climbingTimer += isClimbing ? (Mathf.Sign(rigidBody.velocity.y) * rigidBody.velocity.magnitude + 1)  * Time.deltaTime : 0f;
             currentAirTime = isGrounded ? 0 : (currentAirTime + Time.deltaTime);
-            climbEndInProgress = reachedTop ? true : climbEndInProgress;
+            climbEndInProgress = reachedTop || climbEndInProgress;
             previousClimbingState = isClimbing;
             isClimbing = isAgainstWall && !isGrounded && rigidBody.velocity.magnitude > 0 && playerInputs.IsHoldingJump && climbingTimer <= maxClimbTime;
             reachedTop = previousClimbingState && !isClimbing && !isGrounded && playerInputs.IsHoldingJump && climbingTimer <= maxClimbTime;
@@ -118,10 +116,10 @@ namespace GameLibrary
                 climbEndTimer = 0;
             }
 
-            EventManager.Instance.Broadcast(new OnPointsAddedEvent(playerDirection.magnitude * Time.deltaTime));
+            AddPoints();
         }
 
-        private void FixedUpdate()
+        void FixedUpdate()
         {
             currentSlope = rigidBody.GetSlope(lastPlayerDirection);
             isGrounded = rigidBody.IsGrounded(groundCheckRadius) && playerCollider.enabled;
@@ -218,6 +216,10 @@ namespace GameLibrary
         private void ProcessEndOfClimb()
         {
             transform.position = Vector3.Lerp(transform.position, climbEndDestination, climbEndTimer / 2f);
+        }
+        private void AddPoints()
+        {
+            EventManager.Instance.Broadcast(new OnPointsAddedEvent(playerDirection.magnitude * Time.deltaTime));
         }
     }
 }

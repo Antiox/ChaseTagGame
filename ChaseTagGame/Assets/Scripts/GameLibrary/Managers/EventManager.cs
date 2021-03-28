@@ -12,6 +12,7 @@ namespace GameLibrary
         private readonly Dictionary<Type, Action<IGameEvent>> events = new Dictionary<Type, Action<IGameEvent>>();
         private readonly Dictionary<Delegate, Action<IGameEvent>> callbacks = new Dictionary<Delegate, Action<IGameEvent>>();
 
+
         public void AddListener<T>(Action<T> e) where T : IGameEvent
         {
             if (!callbacks.ContainsKey(e))

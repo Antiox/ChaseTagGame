@@ -7,50 +7,50 @@ using UnityEngine;
 
 namespace GameLibrary
 {
-    public enum PowerUpType
-    {
-        Shield = 5,
-    }
-
     public class PowerUp
     {
         public PowerUpType Type { get; set; }
+        public PowerUpFaction Faction { get; set; }
         public float Duration { get; set; }
 
 
-        public PowerUp(PowerUpType type)
+        public PowerUp(PowerUpType type, PowerUpFaction faction)
         {
             Type = type;
             Duration = (int)type;
+            Faction = faction;
         }
 
 
-        public void ExtendDuration(float duration)
+        public virtual void ExtendDuration(float duration)
         {
             Duration += duration;
         }
 
-        public void StartEffects(GameObject entity)
+        public virtual void StartEffects(GameObject entity)
         {
             ToggleEffects(entity, true);
         }
 
-        public void StopEffects(GameObject entity)
+        public virtual void StopEffects(GameObject entity)
         {
             Duration = 0;
             ToggleEffects(entity, false);
         }
+
+        public override string ToString()
+        {
+            return $"{Type} - {Duration}";
+        }
+
+
+
 
         private void ToggleEffects(GameObject entity, bool active)
         {
             var effect = entity.transform.Find($"{Type}Effect");
             if (effect != null)
                 effect.gameObject.SetActive(active);
-        }
-
-        public override string ToString()
-        {
-            return $"{Type} - {Duration}";
         }
     }
 }

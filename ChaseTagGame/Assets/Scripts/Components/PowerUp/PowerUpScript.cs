@@ -6,6 +6,7 @@ using GameLibrary;
 public class PowerUpScript : MonoBehaviour
 {
     public PowerUpType type;
+    public PowerUpFaction faction;
 
     private void OnTriggerEnter(Collider other)
     {

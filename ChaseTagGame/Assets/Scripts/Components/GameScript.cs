@@ -3,108 +3,48 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System;
+using System.Collections;
 
 public class GameScript : MonoBehaviour
 {
-    public TextMeshProUGUI gamePausedLabel;
-    public TextMeshProUGUI gameOverLabel;
-    public TextMeshProUGUI pointCounterLabel;
-    public TextMeshProUGUI fpsCounterLabel;
-
-    private readonly PowerUpManager powerUpManager = PowerUpManager.Instance;
-    private readonly EventManager eventManager = EventManager.Instance;
-
-    private bool isPaused = false;
-    private float points = 0;
-    private float fpsSmoothing = 0;
-
-
-    public void Awake()
+    void Start()
     {
         Time.timeScale = 1f;
+        GameManager.Start();
 
-        eventManager.AddListener<OnPowerUpTriggerEnterEvent>(OnPowerUpTriggerEnter);
-        eventManager.AddListener<OnEnemyTriggerEnterEvent>(OnEnemyTriggerEnter);
+        StartCoroutine(SpawnPowerUp(0.2f));
     }
 
-    private void Update()
+    void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            isPaused = !isPaused;
-            if (isPaused)
-                PauseGame();
-            else
-                UnpauseGame();
-        }
-
-        pointCounterLabel.text = points.ToString("N0");
-
-        fpsSmoothing += Time.deltaTime;
-
-        if(fpsSmoothing > 0.5f)
-        {
-            fpsSmoothing = 0;
-            fpsCounterLabel.text = (1f / Time.unscaledDeltaTime).ToString("N0") + " FPS";
-        }
-
-        powerUpManager.Update();
+        GameManager.Update();
     }
 
-    private void OnDestroy()
+    void OnDestroy()
     {
-        eventManager.RemoveListener<OnPowerUpTriggerEnterEvent>(OnPowerUpTriggerEnter);
-        eventManager.RemoveListener<OnEnemyTriggerEnterEvent>(OnEnemyTriggerEnter);
-        eventManager.RemoveListener<OnPointsAddedEvent>(OnPointsAdded);
+        GameManager.OnDestroy();
+        StopCoroutine(SpawnPowerUp(0.2f));
     }
 
-    public void GameOver()
-    {
-        gameOverLabel.enabled = true;
-        Time.timeScale = 0.01f;
-        Utility.Invoke(RestartGame, 3f * Time.timeScale);
-    }
-
-    public void PauseGame()
-    {
-        gamePausedLabel.enabled = true;
-        Time.timeScale = 0;
-    }
-
-    public void UnpauseGame()
-    {
-        gamePausedLabel.enabled = false;
-        Time.timeScale = 1f;
-    }
 
     public void RestartGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void GoToMainMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 
 
-    private void OnPowerUpTriggerEnter(OnPowerUpTriggerEnterEvent e)
+    private static IEnumerator SpawnPowerUp(float delay)
     {
-        if (e.Entity.CompareTag(GameTags.Player))
+        while (true)
         {
-            powerUpManager.AddPowerUpToEntity(e.Entity, e.PowerUp.GetComponent<PowerUpScript>().type);
-            Destroy(e.PowerUp);
+            var e = new OnPowerUpSpawnRequestedEvent();
+            EventManager.Instance.Broadcast(e);
+            yield return new WaitForSeconds(delay);
         }
-    }
-
-    private void OnEnemyTriggerEnter(OnEnemyTriggerEnterEvent e)
-    {
-        if (e.Entity.CompareTag(GameTags.Player))
-        {
-            if (powerUpManager.IsEntityShielded(e.Entity))
-                powerUpManager.RemovePowerUpFromEntity(e.Entity, PowerUpType.Shield);
-            else
-                GameOver();
-        }
-    }
-
-    private void OnPointsAdded(OnPointsAddedEvent e)
-    {
-        points += e.Points;
     }
 }

@@ -17,5 +17,7 @@ namespace GameLibrary
         public const string GameController = "GameController";
         public const string GameManager = "GameManager";
         public const string Wall = "Wall";
+        public const string PowerUp = "PowerUp";
+        public const string Enemy = "Enemy";
     }
 }

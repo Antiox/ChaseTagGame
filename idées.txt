@@ -1,3 +1,10 @@
+- Objectif :
+	- Survivre le plus longtemps possible, par vague
+	- Chaque vague dure quelques minutes, et correspond à une journée
+	- Le/Les joueurs doivent se rendre à leur base à la fin de la journée
+	- Le/Les joueurs doivent collecter des objets particuliers pour obtenir des bonus à la vague d'après
+	
+
 - Spawn de plus en plus d'ennemis au fil du temps
 
 - Power Up
@@ -13,6 +20,7 @@
 	- Traverse les obstacles
 	- Peut se téléporter
 	- Se transforme en nuée de fusée qui se dirigent vers le joueur pour le stun / blesser / ...
+	- Fais spawn X ennemis d'un coup
 	
 - Faire des ennemis spéciaux
 	- Ennemi très lent, mais qui lance des projectiles. Si le joueur est touché, il meurt

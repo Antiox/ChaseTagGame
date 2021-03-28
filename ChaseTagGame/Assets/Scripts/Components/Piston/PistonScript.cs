@@ -25,6 +25,7 @@ public class PistonScript : MonoBehaviour
     private Vector3 expandedPosition;
     private PlayerMovement playerMovementScript;
 
+
     void Start()
     {
         piston = GetComponent<Rigidbody>();
@@ -33,7 +34,7 @@ public class PistonScript : MonoBehaviour
         isCoolingDown = false;
     }
 
-    private void OnTriggerStay(Collider other)
+    void OnTriggerStay(Collider other)
     {
         if(other.CompareTag(GameTags.Player) && !isCoolingDown)
         {
@@ -53,19 +54,18 @@ public class PistonScript : MonoBehaviour
     }
 
 
-
     public float GetBestFitForce(Vector3 initialPosition, Vector3 target, Vector3 forceDirection, float mass, float drag)
     {
         var paths = new List<Vector3>();
         var results = new Dictionary<int, float>();
 
         for (float i = 0f; i < 200f; i++)
-            paths.Add(SimulatePath(initialPosition, forceDirection * (1f+i/25f), mass, drag));
+            paths.Add(SimulatePath(initialPosition, forceDirection * (1f + i / 25f), mass, drag));
 
         for (int i = 0; i < paths.Count; i++)
             results.Add(i, Vector3.Distance(target, paths[i]));
 
-        return 1f + results.Aggregate((l, r) => l.Value < r.Value ? l : r).Key/25f;
+        return 1f + results.Aggregate((l, r) => l.Value < r.Value ? l : r).Key / 25f;
     }
 
     public Vector3 SimulatePath(Vector3 initialPosition, Vector3 forceDirection, float mass, float drag)
@@ -103,6 +103,7 @@ public class PistonScript : MonoBehaviour
 
         return segments[numSegments - 1];
     }
+
 
     private IEnumerator DeactivateCollider(Collider c)
     {

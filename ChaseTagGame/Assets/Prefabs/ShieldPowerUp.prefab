@@ -580,8 +580,8 @@ GameObject:
   - component: {fileID: 4062688058795057149}
   - component: {fileID: 3476991951787762642}
   m_Layer: 0
-  m_Name: Shield
-  m_TagString: Untagged
+  m_Name: ShieldPowerUp
+  m_TagString: PowerUp
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -657,6 +657,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 5
+  faction: 1
 --- !u!1 &5553750832791751480
 GameObject:
   m_ObjectHideFlags: 0
