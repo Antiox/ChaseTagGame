@@ -109,7 +109,7 @@ namespace GameLibrary
             if (e.Entity.CompareTag(GameTags.Player))
             {
                 var powerUpComponent = e.PowerUp.GetComponent<PowerUpScript>();
-                var p = new PowerUp(powerUpComponent.type, powerUpComponent.faction);
+                var p = powerUpComponent.powerUp;
                 powerUpManager.AddPowerUpToEntity(e.Entity, p);
                 UnityEngine.Object.Destroy(e.PowerUp);
             }

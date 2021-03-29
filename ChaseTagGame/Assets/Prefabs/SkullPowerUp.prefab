@@ -161,7 +161,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 10
-  faction: 0
+  faction: 1
 --- !u!1001 &1085203633968779200
 PrefabInstance:
   m_ObjectHideFlags: 0

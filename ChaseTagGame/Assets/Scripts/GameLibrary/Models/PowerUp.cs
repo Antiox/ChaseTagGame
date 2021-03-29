@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace GameLibrary
 {
-    public class PowerUp
+    public class PowerUp : IPowerUp
     {
         public PowerUpType Type { get; set; }
         public PowerUpFaction Faction { get; set; }

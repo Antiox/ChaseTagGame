@@ -11,9 +11,13 @@ namespace GameLibrary
     {
         public double Amount { get; set; }
 
-        public ClockPowerUp(PowerUpType type, PowerUpFaction faction, double amount) : base(type, faction) 
+
+        public ClockPowerUp(PowerUpType type, PowerUpFaction faction, double amount) : base(type, faction)
         {
+            Type = type;
+            Faction = faction;
             Amount = amount;
+            Duration = (int)type;
         }
 
 

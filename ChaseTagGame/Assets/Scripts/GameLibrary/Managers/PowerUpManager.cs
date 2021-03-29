@@ -9,7 +9,7 @@ namespace GameLibrary
 {
     public class PowerUpManager : Singleton<PowerUpManager>
     {
-        public Dictionary<GameObject, List<PowerUp>> Entities { get; set; } = new Dictionary<GameObject, List<PowerUp>>();
+        public Dictionary<GameObject, List<IPowerUp>> Entities { get; set; } = new Dictionary<GameObject, List<IPowerUp>>();
 
 
 
@@ -42,10 +42,10 @@ namespace GameLibrary
 
         public void AddEntity(GameObject entity)
         {
-            Entities.Add(entity, new List<PowerUp>());
+            Entities.Add(entity, new List<IPowerUp>());
         }
 
-        public void AddPowerUpToEntity(GameObject entity, PowerUp powerUp)
+        public void AddPowerUpToEntity(GameObject entity, IPowerUp powerUp)
         {
             if (!Entities.ContainsKey(entity))
                 AddEntity(entity);
@@ -55,24 +55,20 @@ namespace GameLibrary
             var existingPowerUp = powerUps.Find(p => p.Type == powerUp.Type);
             if (existingPowerUp == null)
             {
-                if(powerUp.Type == PowerUpType.Clock)
-                    ((ClockPowerUp)powerUp).StartEffects(entity);
-                else
-                    powerUp.StartEffects(entity);
-
+                powerUp.StartEffects(entity);
                 powerUps.Add(powerUp);
             }
             else
                 existingPowerUp.ExtendDuration((int)powerUp.Type);
         }
 
-        public PowerUp GetRandom()
+        public IPowerUp GetRandom()
         {
             var allBuffs = GetAllPowerUps();
             return allBuffs[UnityEngine.Random.Range(0, allBuffs.Count)];
         }
 
-        public PowerUp GetRandom(PowerUpFaction faction)
+        public IPowerUp GetRandom(PowerUpFaction faction)
         {
             var allBuffs = GetAllPowerUps();
             var factionBuffs = allBuffs.Where(p => p.Faction == faction).ToList();
@@ -80,9 +76,9 @@ namespace GameLibrary
         }
 
 
-        private List<PowerUp> GetAllPowerUps()
+        private List<IPowerUp> GetAllPowerUps()
         {
-            var buffs = new List<PowerUp>();
+            var buffs = new List<IPowerUp>();
 
             buffs.Add(new PowerUp(PowerUpType.Shield, PowerUpFaction.Allies));
             buffs.Add(new PowerUp(PowerUpType.Skull, PowerUpFaction.Enemy));

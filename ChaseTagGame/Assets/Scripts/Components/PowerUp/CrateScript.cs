@@ -8,7 +8,7 @@ public class CrateScript : MonoBehaviour
     public GameObject explosionParticles;
     public List<GameObject> PossiblePowerUps;
 
-    public PowerUp powerUp { get; set; }
+    public IPowerUp powerUp { get; set; }
 
 
     void OnCollisionEnter(Collision collision)
@@ -21,7 +21,9 @@ public class CrateScript : MonoBehaviour
         {
             var explosionInstance = Instantiate(explosionParticles, transform.position, Quaternion.identity);
             var powerUpGameObject = PossiblePowerUps.Find(p => p.name == $"{powerUp.Type}PowerUp");
-            Instantiate(powerUpGameObject, transform.position, Quaternion.identity);
+            var p = Instantiate(powerUpGameObject, transform.position, Quaternion.identity);
+            p.GetComponent<PowerUpScript>().powerUp = powerUp;
+
             Destroy(gameObject);
             Destroy(explosionInstance, 3);
         }

@@ -657,7 +657,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 5
-  faction: 1
+  faction: 2
 --- !u!1 &5553750832791751480
 GameObject:
   m_ObjectHideFlags: 0
