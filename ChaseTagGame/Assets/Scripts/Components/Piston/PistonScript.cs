@@ -10,7 +10,8 @@ using GameLibrary;
 public class PistonScript : MonoBehaviour
 {
     public GameObject target;
-
+    [Header("Force")]
+    [SerializeField] private float forceAngle = 30f;
     [Header("Expansion")]
     [SerializeField] private float expandSpeed = 5f;
     [SerializeField] private float maxExpansion = 2f;
@@ -43,7 +44,7 @@ public class PistonScript : MonoBehaviour
             rigidbody.velocity = Vector3.zero;
             rigidbody.drag = 2;
 
-            var force = Utility.GetBallisticForce(rigidbody.position, target.transform.position, 30f, Vector3.up * -40f);
+            var force = Utility.GetBallisticForce(rigidbody.position, target.transform.position, forceAngle, Vector3.up * -40f);
             var multiplier = GetBestFitForce(rigidbody.position, target.transform.position, force, rigidbody.mass, rigidbody.drag);
 
             StartCoroutine(DeactivateCollider(other));

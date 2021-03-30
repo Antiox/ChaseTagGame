@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace GameLibrary
 {
@@ -41,6 +42,21 @@ namespace GameLibrary
             var y = UnityEngine.Random.Range(-maxTorque, maxTorque);
             var z = UnityEngine.Random.Range(-maxTorque, maxTorque);
             return new Vector3(x, y, z);
+        }
+
+        public static Vector3 GetRandomNavMeshPosition()
+        {
+            var navMeshData = NavMesh.CalculateTriangulation();
+            var maxIndices = navMeshData.indices.Length - 3;
+            var firstVertexSelected = UnityEngine.Random.Range(0, maxIndices);
+            var secondVertexSelected = UnityEngine.Random.Range(0, maxIndices);
+            var firstVertexPosition = navMeshData.vertices[navMeshData.indices[firstVertexSelected]];
+            var secondVertexPosition = navMeshData.vertices[navMeshData.indices[secondVertexSelected]];
+
+            if ((int)firstVertexPosition.x == (int)secondVertexPosition.x || (int)firstVertexPosition.z == (int)secondVertexPosition.z)
+                return GetRandomNavMeshPosition();
+            else
+                return Vector3.Lerp(firstVertexPosition, secondVertexPosition, UnityEngine.Random.Range(0.05f, 0.95f));
         }
     }
 }

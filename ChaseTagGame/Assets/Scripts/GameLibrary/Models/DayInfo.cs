@@ -11,7 +11,7 @@ namespace GameLibrary
         public int Number { get; set; }
         public double TimeLeft { get; set; }
 
-        private const double DEFAULT_TIME_LEFT = 240;
+        private const double DEFAULT_TIME_LEFT = 10;
 
         public DayInfo()
         {

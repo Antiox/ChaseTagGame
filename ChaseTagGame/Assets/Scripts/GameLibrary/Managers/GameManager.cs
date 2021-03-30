@@ -22,45 +22,48 @@ namespace GameLibrary
 
 
         public static float Points { get; private set; }
-        public static bool IsPaused { get; private set; }
 
 
         public static void Start()
         {
+            waveManager.Start();
+
+            waveManager.Players.Add(new Player(GameObject.Find("Player")));
+
             mainGameObject = GameObject.Find("GameManager");
             mainGameScript = mainGameObject.GetComponent<GameScript>();
+
             hudManager = mainGameObject.GetComponent<HudManagerScript>();
+
             eventManager.AddListener<OnPowerUpTriggerEnterEvent>(OnPowerUpTriggerEnter);
             eventManager.AddListener<OnEnemyTriggerEnterEvent>(OnEnemyTriggerEnter);
             eventManager.AddListener<OnPointsAddedEvent>(OnPointsAdded);
             eventManager.AddListener<OnDayEndedEvent>(OnDayEnded);
             eventManager.AddListener<OnTimeAddedEvent>(OnTimeAdded);
-            State = GameState.InGame;
+            eventManager.AddListener<OnPlayerExitSafeZoneEvent>(OnPlayerExitSafeZone);
+
+            State = GameState.WaitingPlayer;
         }
 
         public static void Update()
         {
-            if (State != GameState.GameOver)
+            if (State == GameState.InGame)
             {
-                HandlePauseGame();
-
-                if(State != GameState.DayEnded)
-                {
-                    waveManager.Update();
-                    hudManager.DisplayDayInfo(waveManager.CurrentDay);
-                }
-
                 powerUpManager.Update();
+                waveManager.Update();
             }
+
+            hudManager.DisplayDayInfo(waveManager.CurrentDay);
         }
 
         public static void OnDestroy()
         {
+            waveManager.OnDestroy();
             eventManager.RemoveListener<OnPowerUpTriggerEnterEvent>(OnPowerUpTriggerEnter);
             eventManager.RemoveListener<OnEnemyTriggerEnterEvent>(OnEnemyTriggerEnter);
             eventManager.RemoveListener<OnPointsAddedEvent>(OnPointsAdded);
             eventManager.RemoveListener<OnDayEndedEvent>(OnDayEnded);
-            
+            eventManager.RemoveListener<OnPlayerExitSafeZoneEvent>(OnPlayerExitSafeZone);
         }
 
         public static void Reset()
@@ -75,33 +78,6 @@ namespace GameLibrary
             hudManager.DisplayGameOver();
             mainGameScript.Invoke("GoToMainMenu", 3f);
         }
-
-        private static void PauseGame()
-        {
-            State = GameState.Paused;
-            hudManager.PauseGame();
-            Time.timeScale = 0;
-        }
-
-        private static void ResumeGame()
-        {
-            State = GameState.InGame;
-            hudManager.ResumeGame();
-            Time.timeScale = 1f;
-        }
-
-        private static void HandlePauseGame()
-        {
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                IsPaused = !IsPaused;
-                if (IsPaused)
-                    PauseGame();
-                else
-                    ResumeGame();
-            }
-        }
-
 
 
         private static void OnPowerUpTriggerEnter(OnPowerUpTriggerEnterEvent e)
@@ -137,15 +113,27 @@ namespace GameLibrary
 
         private static void OnDayEnded(OnDayEndedEvent e)
         {
-            State = GameState.DayEnded;
-            hudManager.DisplayEndOfDay();
-            waveManager.LoadNextDay();
-            mainGameScript.Invoke("RestartGame", 3f);
+            if(waveManager.ArePlayersInSafeZone())
+            {
+                State = GameState.DayEnded;
+                hudManager.DisplayEndOfDay();
+                waveManager.LoadNextDay();
+                mainGameScript.Invoke("RestartGame", 3f);
+            }
+            else
+            {
+                GameOver();
+            }
         }
 
         private static void OnTimeAdded(OnTimeAddedEvent e)
         {
             waveManager.ExtendDuration(e.Amount);
+        }
+
+        private static void OnPlayerExitSafeZone(OnPlayerExitSafeZoneEvent e)
+        {
+            State = GameState.InGame;
         }
     }
 }

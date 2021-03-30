@@ -12,7 +12,7 @@ public class GameScript : MonoBehaviour
         Time.timeScale = 1f;
         GameManager.Start();
 
-        StartCoroutine(SpawnPowerUp(0.2f));
+        //StartCoroutine(SpawnPowerUp(0.2f));
     }
 
     void Update()
@@ -23,7 +23,7 @@ public class GameScript : MonoBehaviour
     void OnDestroy()
     {
         GameManager.OnDestroy();
-        StopCoroutine(SpawnPowerUp(0.2f));
+        StopCoroutine(SpawnPowerUp(30f));
     }
 
 

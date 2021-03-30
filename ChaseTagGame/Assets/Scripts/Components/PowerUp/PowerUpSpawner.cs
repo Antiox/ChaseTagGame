@@ -24,7 +24,7 @@ public class PowerUpSpawner : MonoBehaviour
 
     private void OnPowerUpSpawnRequested(OnPowerUpSpawnRequestedEvent e)
     {
-        var randomLocation = GetRandomNavMeshPosition();
+        var randomLocation = Utility.GetRandomNavMeshPosition();
         SpawnCrate(crate, randomLocation, spawnAngle, e.Faction);
     }
 
@@ -39,20 +39,5 @@ public class PowerUpSpawner : MonoBehaviour
 
         spawnedRigidBody.AddForce(force, ForceMode.VelocityChange);
         spawnedRigidBody.AddTorque(randomTorque, ForceMode.VelocityChange);
-    }
-
-    private Vector3 GetRandomNavMeshPosition()
-    {
-        var navMeshData = NavMesh.CalculateTriangulation();
-        var maxIndices = navMeshData.indices.Length - 3;
-        var firstVertexSelected = Random.Range(0, maxIndices);
-        var secondVertexSelected = Random.Range(0, maxIndices);
-        var firstVertexPosition = navMeshData.vertices[navMeshData.indices[firstVertexSelected]];
-        var secondVertexPosition = navMeshData.vertices[navMeshData.indices[secondVertexSelected]];
-
-        if ((int)firstVertexPosition.x == (int)secondVertexPosition.x || (int)firstVertexPosition.z == (int)secondVertexPosition.z)
-            return GetRandomNavMeshPosition();
-        else
-            return Vector3.Lerp(firstVertexPosition, secondVertexPosition, Random.Range(0.05f, 0.95f));
     }
 }

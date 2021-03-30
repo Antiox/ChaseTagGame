@@ -22,8 +22,6 @@ public class EnemyScript : MonoBehaviour
     {
         if(target != null)
             navMeshAgent.SetDestination(target.position);
-
-        
     }
 
 

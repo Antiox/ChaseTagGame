@@ -12,5 +12,6 @@ namespace GameLibrary
         InGame,
         DayEnded,
         Paused,
+        WaitingPlayer,
     }
 }
