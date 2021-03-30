@@ -48,11 +48,14 @@ namespace GameLibrary
         public  void Update()
         {
             CurrentDay.TimeLeft -= Time.deltaTime;
+            var e1 = new OnTimeChangedEvent(CurrentDay.InitialTime, CurrentDay.TimeLeft);
+            EventManager.Instance.Broadcast(e1);
 
-            if(CurrentDay.TimeLeft <= 0)
+
+            if (CurrentDay.TimeLeft <= 0)
             {
-                var e = new OnDayEndedEvent();
-                EventManager.Instance.Broadcast(e);
+                var e2 = new OnDayEndedEvent();
+                EventManager.Instance.Broadcast(e2);
             }
         }
 
