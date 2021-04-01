@@ -9,9 +9,9 @@ namespace GameLibrary
     public enum GameState
     {
         GameOver,
-        InGame,
+        InGame ,
         DayEnded,
         Paused,
-        WaitingPlayer,
+        WaitingPlayer
     }
 }
