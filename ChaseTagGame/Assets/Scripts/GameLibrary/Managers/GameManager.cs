@@ -23,6 +23,8 @@ namespace GameLibrary
 
         public static float Points { get; private set; }
 
+        private static GameState previousState;
+
 
         public static void Start()
         {
@@ -53,6 +55,7 @@ namespace GameLibrary
                 waveManager.Update();
             }
 
+            HandlePauseGame();
             hudManager.DisplayDayInfo(waveManager.CurrentDay);
         }
 
@@ -76,8 +79,38 @@ namespace GameLibrary
         {
             State = GameState.GameOver;
             hudManager.DisplayGameOver();
-            mainGameScript.Invoke("GoToMainMenu", 3f);
+            
+            var e = new OnGameOverEvent(waveManager.CurrentDay);
+            EventManager.Instance.Dispatch(e);
         }
+
+        private static void PauseGame()
+        {
+            previousState = State;
+            State = GameState.Paused;
+            hudManager.PauseGame();
+            Time.timeScale = 0;
+        }
+
+        public static void ResumeGame()
+        {
+            State = previousState;
+            hudManager.ResumeGame();
+            Time.timeScale = 1f;
+        }
+
+        private static void HandlePauseGame()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (State != GameState.Paused && State != GameState.GameOver)
+                    PauseGame();
+                else
+                    ResumeGame();
+            }
+        }
+
+
 
 
         private static void OnPowerUpTriggerEnter(OnPowerUpTriggerEnterEvent e)

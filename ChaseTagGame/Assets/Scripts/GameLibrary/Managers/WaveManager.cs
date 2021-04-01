@@ -49,13 +49,13 @@ namespace GameLibrary
         {
             CurrentDay.TimeLeft -= Time.deltaTime;
             var e1 = new OnTimeChangedEvent(CurrentDay.InitialTime, CurrentDay.TimeLeft);
-            EventManager.Instance.Broadcast(e1);
+            EventManager.Instance.Dispatch(e1);
 
 
             if (CurrentDay.TimeLeft <= 0)
             {
                 var e2 = new OnDayEndedEvent();
-                EventManager.Instance.Broadcast(e2);
+                EventManager.Instance.Dispatch(e2);
             }
         }
 

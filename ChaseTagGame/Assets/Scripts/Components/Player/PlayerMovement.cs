@@ -116,6 +116,8 @@ namespace GameLibrary
                 climbEndTimer = 0;
             }
 
+
+            UpdateCollider();
             AddPoints();
         }
 
@@ -161,7 +163,6 @@ namespace GameLibrary
         private void ProcessSlide()
         {
             rigidBody.Slide(SlideForce);
-            ReduceColliderWhenSliding();
         }
         private void ProcessJump()
         {
@@ -182,7 +183,7 @@ namespace GameLibrary
 
             return 2f;
         }
-        private void ReduceColliderWhenSliding()
+        private void UpdateCollider()
         {
             var newCenter = playerCollider.center;
             newCenter.y = playerInputs.IsSliding ? 0.3f : 0.9f;
@@ -219,7 +220,7 @@ namespace GameLibrary
         }
         private void AddPoints()
         {
-            EventManager.Instance.Broadcast(new OnPointsAddedEvent(playerDirection.magnitude * Time.deltaTime));
+            EventManager.Instance.Dispatch(new OnPointsAddedEvent(playerDirection.magnitude * Time.deltaTime));
         }
     }
 }

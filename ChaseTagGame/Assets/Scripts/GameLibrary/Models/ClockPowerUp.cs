@@ -25,7 +25,7 @@ namespace GameLibrary
         {
             base.StartEffects(entity);
             var e = new OnTimeAddedEvent(Amount);
-            EventManager.Instance.Broadcast(e);
+            EventManager.Instance.Dispatch(e);
         }
     }
 }

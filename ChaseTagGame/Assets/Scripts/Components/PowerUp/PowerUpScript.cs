@@ -13,6 +13,6 @@ public class PowerUpScript : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         var e = new OnPowerUpTriggerEnterEvent(gameObject, other.gameObject);
-        EventManager.Instance.Broadcast(e);
+        EventManager.Instance.Dispatch(e);
     }
 }

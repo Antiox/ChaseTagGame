@@ -11,7 +11,7 @@ namespace GameLibrary
             if(other.CompareTag(GameTags.Player))
             {
                 var e = new OnPlayerEnterSafeZoneEvent(other.gameObject);
-                EventManager.Instance.Broadcast(e);
+                EventManager.Instance.Dispatch(e);
             }
         }
 
@@ -20,7 +20,7 @@ namespace GameLibrary
             if (other.CompareTag(GameTags.Player))
             {
                 var e = new OnPlayerExitSafeZoneEvent(other.gameObject);
-                EventManager.Instance.Broadcast(e);
+                EventManager.Instance.Dispatch(e);
             }
         }
     }

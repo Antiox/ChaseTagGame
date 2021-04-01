@@ -28,7 +28,7 @@ public class EnemyScript : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         var e = new OnEnemyTriggerEnterEvent(gameObject, other.gameObject);
-        EventManager.Instance.Broadcast(e);
+        EventManager.Instance.Dispatch(e);
     }
 
     private IEnumerator DetermineTarget()

@@ -44,7 +44,7 @@ namespace GameLibrary
             }
         }
 
-        public void Broadcast(IGameEvent e)
+        public void Dispatch(IGameEvent e)
         {
             if (events.TryGetValue(e.GetType(), out var action))
                 action.Invoke(e);

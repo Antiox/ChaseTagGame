@@ -12,7 +12,7 @@ public class GameScript : MonoBehaviour
         Time.timeScale = 1f;
         GameManager.Start();
 
-        StartCoroutine(SpawnPowerUp(5f));
+        //StartCoroutine(SpawnPowerUp(5f));
     }
 
     void Update()
@@ -43,7 +43,7 @@ public class GameScript : MonoBehaviour
         while (true)
         {
             var e = new OnPowerUpSpawnRequestedEvent();
-            EventManager.Instance.Broadcast(e);
+            EventManager.Instance.Dispatch(e);
             yield return new WaitForSeconds(delay);
         }
     }
