@@ -34,7 +34,6 @@ public class DayNightCycleScript : MonoBehaviour
 
     private void UpdateLighting(float timePercent)
     {
-        //Set ambient and fog
         RenderSettings.ambientLight = Preset.AmbientColor.Evaluate(timePercent);
         RenderSettings.fogColor = Preset.FogColor.Evaluate(timePercent);
         DirectionalLight.color = Preset.DirectionalColor.Evaluate(timePercent);

@@ -11,20 +11,27 @@ namespace GameLibrary
         public int Number { get; set; }
         public double TimeLeft { get; set; }
         public double InitialTime { get; set; }
+        public int ObjectsCollected { get; set; }
+        public int RequiredObjects { get; set; }
 
-        private const double DEFAULT_TIME_LEFT = 5;
+        private const double DEFAULT_TIME_LEFT = 20;
+        private const int DEFAULT_REQUIRED_OBJECTS = 2;
 
         public DayInfo()
         {
+            RequiredObjects = DEFAULT_REQUIRED_OBJECTS;
             TimeLeft = DEFAULT_TIME_LEFT;
             InitialTime = TimeLeft;
             Number = 1;
+            ObjectsCollected = 0;
         }
         public DayInfo(int n)
         {
             Number = n;
             TimeLeft = DEFAULT_TIME_LEFT;
             InitialTime = TimeLeft;
+            RequiredObjects = 2 * n;
+            ObjectsCollected = 0;
         }
 
         public override string ToString()

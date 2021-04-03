@@ -48,9 +48,12 @@ namespace GameLibrary
 
         private void ToggleEffects(GameObject entity, bool active)
         {
-            var effect = entity.transform.Find($"{Type}Effect");
-            if (effect != null)
-                effect.gameObject.SetActive(active);
+            if (entity != null)
+            {
+                var effect = entity.transform.Find($"{Type}Effect");
+                if (effect != null)
+                    effect.gameObject.SetActive(active);
+            }
         }
     }
 }

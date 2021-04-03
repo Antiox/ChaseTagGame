@@ -12,6 +12,7 @@
 	- Vitesse augmentée
 	- Tue / Freeze un ennemi sur le terrain
 	- Grimpe aux murs plus haut / longtemps
+	- Extra life (très rare)
 	
 - Power Up Ennemi
 	- L'ennemi génère une trainée de brouillard

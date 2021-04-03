@@ -45,6 +45,7 @@ namespace GameLibrary
             eventManager.AddListener<OnDayEndedEvent>(OnDayEnded);
             eventManager.AddListener<OnTimeAddedEvent>(OnTimeAdded);
             eventManager.AddListener<OnPlayerExitSafeZoneEvent>(OnPlayerExitSafeZone);
+            eventManager.AddListener<OnObjectiveItemTriggerEnterEvent>(OnObjectiveItemTriggerEnter);
 
             State = GameState.WaitingPlayer;
         }
@@ -142,7 +143,7 @@ namespace GameLibrary
 
         private static void OnDayEnded(OnDayEndedEvent e)
         {
-            if(waveManager.ArePlayersInSafeZone())
+            if(waveManager.ArePlayersInSafeZone() && waveManager.CollectedEnoughObjectives())
             {
                 State = GameState.DayEnded;
                 hudManager.DisplayEndOfDay();
@@ -163,6 +164,12 @@ namespace GameLibrary
         private static void OnPlayerExitSafeZone(OnPlayerExitSafeZoneEvent e)
         {
             State = GameState.InGame;
+        }
+
+        private static void OnObjectiveItemTriggerEnter(OnObjectiveItemTriggerEnterEvent e)
+        {
+            waveManager.IncreaseCollectedObjectives();
+            GameObject.Destroy(e.Objective.gameObject);
         }
     }
 }

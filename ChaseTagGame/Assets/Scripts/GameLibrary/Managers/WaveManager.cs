@@ -9,9 +9,10 @@ namespace GameLibrary
 {
     public class WaveManager
     {
-        public DayInfo CurrentDay { get; set; }
-        public List<Player> Players { get; set; }
-        public List<Enemy> Enemies { get; set; }
+        public DayInfo CurrentDay { get; private set; }
+        public List<Player> Players { get; private set; }
+        public List<Enemy> Enemies { get; private set; }
+
 
         #region Singleton
         private static WaveManager instance;
@@ -43,6 +44,7 @@ namespace GameLibrary
             EventManager.Instance.AddListener<OnPlayerExitSafeZoneEvent>(OnPlayerExitSafeZone);
 
             SpawnEnemies();
+            SpawnObjectives();
         }
 
         public  void Update()
@@ -68,7 +70,9 @@ namespace GameLibrary
 
         public void LoadNextDay()
         {
+            var missingObjects = CurrentDay.RequiredObjects - CurrentDay.ObjectsCollected;
             CurrentDay = new DayInfo(CurrentDay.Number + 1);
+            CurrentDay.RequiredObjects += missingObjects;
         }
 
         public void Reset()
@@ -93,6 +97,16 @@ namespace GameLibrary
             return true;
         }
 
+        public bool CollectedEnoughObjectives()
+        {
+            return CurrentDay.ObjectsCollected >= CurrentDay.RequiredObjects / 2f;
+        }
+
+        public void IncreaseCollectedObjectives()
+        {
+            CurrentDay.ObjectsCollected++;
+        }
+
 
         private void SpawnEnemies()
         {
@@ -100,6 +114,14 @@ namespace GameLibrary
             {
                 var enemy = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Enemy"), Utility.GetRandomNavMeshPosition(), Quaternion.identity);
                 Enemies.Add(new Enemy(enemy));
+            }
+        }
+
+        private void SpawnObjectives()
+        {
+            for (int i = 0; i < (CurrentDay.RequiredObjects + 1); i++)
+            {
+                GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Key"), Utility.GetRandomNavMeshPosition(), Quaternion.identity);
             }
         }
 

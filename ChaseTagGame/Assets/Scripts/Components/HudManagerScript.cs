@@ -12,12 +12,14 @@ namespace GameLibrary
         private TextMeshProUGUI dayInfoLabel;
         private TextMeshProUGUI dayEndedLabel;
         private TextMeshProUGUI fpsCounterLabel;
+        private TextMeshProUGUI objectivesCounterLabel;
 
         public void Start()
         {
             dayInfoLabel = GameObject.Find("DayInfoLabel").GetComponent<TextMeshProUGUI>();
             dayEndedLabel = GameObject.Find("DayEndedLabel").GetComponent<TextMeshProUGUI>();
             fpsCounterLabel = GameObject.Find("FpsCounterLabel").GetComponent<TextMeshProUGUI>();
+            objectivesCounterLabel = GameObject.Find("ObjectivesCounterLabel").GetComponent<TextMeshProUGUI>();
 
             optionsMenu.SetActive(false);
             gameOverMenu.SetActive(false);
@@ -32,6 +34,7 @@ namespace GameLibrary
         public void DisplayDayInfo(DayInfo day)
         {
             dayInfoLabel.text = day.ToString();
+            objectivesCounterLabel.text = $"{day.ObjectsCollected}/{day.RequiredObjects}";
         }
 
         public void ResumeGame()
