@@ -2143,6 +2143,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1762321403}
   - component: {fileID: 1762321404}
+  - component: {fileID: 1762321405}
   m_Layer: 5
   m_Name: OptionsMenu
   m_TagString: Untagged
@@ -2184,6 +2185,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36440e32a14c23341855566a2a0c40b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1762321405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1762321402}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee09c0f7949bd5b439ed536abd911b2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mouseSensitivitySlider: {fileID: 10316178}
 --- !u!1 &1845606504
 GameObject:
   m_ObjectHideFlags: 0

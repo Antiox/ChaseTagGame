@@ -32,3 +32,4 @@
 
 - Décors dynamique : piston qui poussent les joueurs, ...
 - Système de grimpe sur les murs et bordures comme Apex / BL3
+- Double saut

@@ -116,7 +116,6 @@ namespace GameLibrary
                 climbEndTimer = 0;
             }
 
-
             UpdateCollider();
             AddPoints();
         }

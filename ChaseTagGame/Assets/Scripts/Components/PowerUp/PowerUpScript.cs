@@ -12,7 +12,13 @@ public class PowerUpScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        var e = new OnPowerUpTriggerEnterEvent(gameObject, other.gameObject);
-        EventManager.Instance.Dispatch(e);
+        var allowedForPlayer = other.CompareTag(GameTags.Player) && powerUp.Faction == PowerUpFaction.Allies;
+        var allowedForEnemies = other.CompareTag(GameTags.Enemy) && powerUp.Faction == PowerUpFaction.Enemy;
+
+        if (allowedForPlayer || allowedForEnemies)
+        {
+            var e = new OnPowerUpTriggerEnterEvent(gameObject, other.gameObject);
+            EventManager.Instance.Dispatch(e);
+        }
     }
 }

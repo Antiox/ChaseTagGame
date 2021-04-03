@@ -15,6 +15,7 @@ namespace GameLibrary
         public static PowerUpManager powerUpManager { get; private set; } = PowerUpManager.Instance;
         public static EventManager eventManager { get; private set; } = EventManager.Instance;
         public static WaveManager waveManager { get; private set; } = WaveManager.Instance;
+        public static SettingsManager settingsManager { get; private set; } = SettingsManager.Instance;
         public static HudManagerScript hudManager { get; private set; }
         public static GameObject mainGameObject { get; private set; }
         public static GameScript mainGameScript { get; private set; }
@@ -29,6 +30,7 @@ namespace GameLibrary
         public static void Start()
         {
             waveManager.Start();
+            settingsManager.Start();
 
             waveManager.Players.Add(new Player(GameObject.Find("Player")));
 
@@ -62,6 +64,7 @@ namespace GameLibrary
         public static void OnDestroy()
         {
             waveManager.OnDestroy();
+            settingsManager.OnDestroy();
             eventManager.RemoveListener<OnPowerUpTriggerEnterEvent>(OnPowerUpTriggerEnter);
             eventManager.RemoveListener<OnEnemyTriggerEnterEvent>(OnEnemyTriggerEnter);
             eventManager.RemoveListener<OnPointsAddedEvent>(OnPointsAdded);
@@ -115,17 +118,10 @@ namespace GameLibrary
 
         private static void OnPowerUpTriggerEnter(OnPowerUpTriggerEnterEvent e)
         {
-            if (e.Entity.CompareTag(GameTags.Player))
-            {
-                var powerUpComponent = e.PowerUp.GetComponent<PowerUpScript>();
-                var p = powerUpComponent.powerUp;
-                powerUpManager.AddPowerUpToEntity(e.Entity, p);
-                UnityEngine.Object.Destroy(e.PowerUp);
-            }
-            else if (e.Entity.CompareTag(GameTags.Enemy))
-            {
-                UnityEngine.Object.Destroy(e.PowerUp);
-            }
+            var powerUpComponent = e.PowerUp.GetComponent<PowerUpScript>();
+            var p = powerUpComponent.powerUp;
+            powerUpManager.AddPowerUpToEntity(e.Entity, p);
+            UnityEngine.Object.Destroy(e.PowerUp);
         }
 
         private static void OnEnemyTriggerEnter(OnEnemyTriggerEnterEvent e)
