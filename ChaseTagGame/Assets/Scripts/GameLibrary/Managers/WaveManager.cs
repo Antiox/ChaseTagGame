@@ -80,6 +80,7 @@ namespace GameLibrary
 
         public void ExtendDuration(double amount)
         {
+            CurrentDay.InitialTime += (amount * CurrentDay.InitialTime) / CurrentDay.TimeLeft;
             CurrentDay.TimeLeft += amount;
         }
 
