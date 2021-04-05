@@ -6,13 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameLibrary
 {
-    public enum GameState
+    class SkillsManager
     {
-        GameOver,
-        InGame ,
-        DayEnded,
-        Paused,
-        WaitingPlayer,
-        Shopping
     }
 }

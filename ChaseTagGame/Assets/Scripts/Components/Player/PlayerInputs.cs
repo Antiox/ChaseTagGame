@@ -15,6 +15,7 @@ namespace GameLibrary
         public bool IsSlideTriggered { get; private set; }
         public bool IsSliding { get; private set; }
         public bool IsMoving { get; private set; }
+        public bool IsPressingActionButton { get; private set; }
 
 
         void Start()
@@ -24,7 +25,7 @@ namespace GameLibrary
 
         void Update()
         {
-            if(GameManager.State != GameState.GameOver)
+            if(GameManager.State != GameState.GameOver && GameManager.State != GameState.Shopping)
             {
                 HorizontalAxis = Input.GetAxisRaw("Horizontal");
                 VerticalAxis = Input.GetAxisRaw("Vertical");

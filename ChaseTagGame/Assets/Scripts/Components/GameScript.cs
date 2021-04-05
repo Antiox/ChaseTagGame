@@ -45,6 +45,9 @@ public class GameScript : MonoBehaviour
             var e = new OnPowerUpSpawnRequestedEvent();
             EventManager.Instance.Dispatch(e);
             yield return new WaitForSeconds(delay);
+
+            if (GameManager.State == GameState.Shopping || GameManager.State == GameState.GameOver)
+                break;
         }
     }
 }

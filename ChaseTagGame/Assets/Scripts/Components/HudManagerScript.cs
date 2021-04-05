@@ -9,10 +9,14 @@ namespace GameLibrary
     {
         [SerializeField] private GameObject optionsMenu;
         [SerializeField] private GameObject gameOverMenu;
+        [SerializeField] private GameObject shopMenu;
         private TextMeshProUGUI dayInfoLabel;
         private TextMeshProUGUI dayEndedLabel;
         private TextMeshProUGUI fpsCounterLabel;
         private TextMeshProUGUI objectivesCounterLabel;
+        private TextMeshProUGUI currencyAmountLabel;
+        private TextMeshProUGUI interactiveElementLabel;
+
 
         public void Start()
         {
@@ -20,10 +24,12 @@ namespace GameLibrary
             dayEndedLabel = GameObject.Find("DayEndedLabel").GetComponent<TextMeshProUGUI>();
             fpsCounterLabel = GameObject.Find("FpsCounterLabel").GetComponent<TextMeshProUGUI>();
             objectivesCounterLabel = GameObject.Find("ObjectivesCounterLabel").GetComponent<TextMeshProUGUI>();
-
+            interactiveElementLabel = GameObject.Find("InteractiveElementLabel").GetComponent<TextMeshProUGUI>(); 
             optionsMenu.SetActive(false);
             gameOverMenu.SetActive(false);
+            shopMenu.SetActive(false);
             dayEndedLabel.enabled = false;
+            interactiveElementLabel.enabled = false;
 
 
             StartCoroutine(UpdateFps());
@@ -55,6 +61,17 @@ namespace GameLibrary
         public void DisplayEndOfDay()
         {
             dayEndedLabel.enabled = true;
+        }
+
+        public void DisplayShopMenu()
+        {
+            shopMenu.SetActive(true);
+        }
+
+        public void DisplayCurrencyAmount(int amount)
+        {
+            currencyAmountLabel = shopMenu.transform.Find("CurrencyCountLabel").GetComponent<TextMeshProUGUI>();
+            currencyAmountLabel.text = $"Currency : {amount}";
         }
 
         private IEnumerator UpdateFps()

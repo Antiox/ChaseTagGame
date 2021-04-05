@@ -16,12 +16,6 @@ namespace GameLibrary
             return Math.Abs(a - b) < 0.0001;
         }
 
-        public static IEnumerator Invoke(Action action, float delay)
-        {
-            yield return new WaitForSeconds(delay);
-            action();
-        }
-
         public static Vector3 GetBallisticForce(Vector3 source, Vector3 target, float angle, Vector3 gravity)
         {
             var direction = target - source;

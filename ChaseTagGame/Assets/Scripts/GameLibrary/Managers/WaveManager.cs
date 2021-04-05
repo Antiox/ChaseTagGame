@@ -9,9 +9,13 @@ namespace GameLibrary
 {
     public class WaveManager
     {
+
         public DayInfo CurrentDay { get; private set; }
-        public List<Player> Players { get; private set; }
+        public Player Player { get; private set; }
         public List<Enemy> Enemies { get; private set; }
+        public int Currency { get; set; }
+
+        private float endofDayMultiplier;
 
 
         #region Singleton
@@ -31,40 +35,32 @@ namespace GameLibrary
         private WaveManager()
         {
             CurrentDay = new DayInfo();
-            Players = new List<Player>();
+            Player = new Player();
             Enemies = new List<Enemy>();
         }
 
         public void Start()
         {
-            Players.Clear();
+            Player = new Player(GameObject.Find("Player"));
+            endofDayMultiplier = 1f;
             Enemies.Clear();
-
-            EventManager.Instance.AddListener<OnPlayerEnterSafeZoneEvent>(OnPlayerEnterSafeZone);
-            EventManager.Instance.AddListener<OnPlayerExitSafeZoneEvent>(OnPlayerExitSafeZone);
-
             SpawnEnemies();
             SpawnObjectives();
         }
 
         public  void Update()
         {
-            CurrentDay.TimeLeft -= Time.deltaTime;
+            CurrentDay.TimeLeft -= Time.deltaTime * endofDayMultiplier;
             var e1 = new OnTimeChangedEvent(CurrentDay.InitialTime, CurrentDay.TimeLeft);
             EventManager.Instance.Dispatch(e1);
 
 
             if (CurrentDay.TimeLeft <= 0)
             {
+                Currency += CurrentDay.ObjectsCollected;
                 var e2 = new OnDayEndedEvent();
                 EventManager.Instance.Dispatch(e2);
             }
-        }
-
-        public void OnDestroy()
-        {
-            EventManager.Instance.RemoveListener<OnPlayerEnterSafeZoneEvent>(OnPlayerEnterSafeZone);
-            EventManager.Instance.RemoveListener<OnPlayerExitSafeZoneEvent>(OnPlayerExitSafeZone);
         }
 
 
@@ -79,7 +75,6 @@ namespace GameLibrary
         {
             CurrentDay = new DayInfo();
             Enemies.Clear();
-            Players.Clear();
         }
 
         public void ExtendDuration(double amount)
@@ -88,13 +83,9 @@ namespace GameLibrary
             CurrentDay.TimeLeft += amount;
         }
 
-        public bool ArePlayersInSafeZone()
+        public bool IsPlayerInSafeZone()
         {
-            foreach (var p in Players)
-                if (!p.IsInSafeZone)
-                    return false;
-
-            return true;
+            return Player.IsInSafeZone;
         }
 
         public bool CollectedEnoughObjectives()
@@ -107,6 +98,10 @@ namespace GameLibrary
             CurrentDay.ObjectsCollected++;
         }
 
+        public void AccelerateEndOfDay()
+        {
+            endofDayMultiplier = 20f;
+        }
 
         private void SpawnEnemies()
         {
@@ -123,19 +118,6 @@ namespace GameLibrary
             {
                 GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Key"), Utility.GetRandomNavMeshPosition(), Quaternion.identity);
             }
-        }
-
-
-        private void OnPlayerExitSafeZone(OnPlayerExitSafeZoneEvent e)
-        {
-            var player = Players.Find(p => p.gameObject == e.Player);
-            player.IsInSafeZone = false;
-        }
-
-        private void OnPlayerEnterSafeZone(OnPlayerEnterSafeZoneEvent e)
-        {
-            var player = Players.Find(p => p.gameObject == e.Player);
-            player.IsInSafeZone = true;
         }
     }
 }

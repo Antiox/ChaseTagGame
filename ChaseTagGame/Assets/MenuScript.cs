@@ -26,11 +26,14 @@ namespace GameLibrary
             SceneManager.LoadScene(0);
         }
 
-
-
         public void ResumeGame()
         {
             GameManager.ResumeGame();
+        }
+
+        public void GoToNextDay()
+        {
+            GameManager.GoToNextDay();
         }
     }
 }

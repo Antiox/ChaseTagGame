@@ -14,7 +14,7 @@ namespace GameLibrary
         public int ObjectsCollected { get; set; }
         public int RequiredObjects { get; set; }
 
-        private const double DEFAULT_TIME_LEFT = 20;
+        private const double DEFAULT_TIME_LEFT = 120;
         private const int DEFAULT_REQUIRED_OBJECTS = 2;
 
         public DayInfo()

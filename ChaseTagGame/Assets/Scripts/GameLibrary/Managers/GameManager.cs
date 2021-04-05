@@ -32,7 +32,6 @@ namespace GameLibrary
             waveManager.Start();
             settingsManager.Start();
 
-            waveManager.Players.Add(new Player(GameObject.Find("Player")));
 
             mainGameObject = GameObject.Find("GameManager");
             mainGameScript = mainGameObject.GetComponent<GameScript>();
@@ -46,9 +45,11 @@ namespace GameLibrary
             eventManager.AddListener<OnTimeAddedEvent>(OnTimeAdded);
             eventManager.AddListener<OnPlayerExitSafeZoneEvent>(OnPlayerExitSafeZone);
             eventManager.AddListener<OnObjectiveItemTriggerEnterEvent>(OnObjectiveItemTriggerEnter);
+            eventManager.AddListener<OnInteractiveElementPressedEvent>(OnInteractiveElementPressed);
 
             State = GameState.WaitingPlayer;
         }
+
 
         public static void Update()
         {
@@ -57,6 +58,10 @@ namespace GameLibrary
                 powerUpManager.Update();
                 waveManager.Update();
             }
+            else if(State == GameState.Shopping)
+            {
+
+            }
 
             HandlePauseGame();
             hudManager.DisplayDayInfo(waveManager.CurrentDay);
@@ -64,13 +69,14 @@ namespace GameLibrary
 
         public static void OnDestroy()
         {
-            waveManager.OnDestroy();
             settingsManager.OnDestroy();
             eventManager.RemoveListener<OnPowerUpTriggerEnterEvent>(OnPowerUpTriggerEnter);
             eventManager.RemoveListener<OnEnemyTriggerEnterEvent>(OnEnemyTriggerEnter);
             eventManager.RemoveListener<OnPointsAddedEvent>(OnPointsAdded);
             eventManager.RemoveListener<OnDayEndedEvent>(OnDayEnded);
             eventManager.RemoveListener<OnPlayerExitSafeZoneEvent>(OnPlayerExitSafeZone);
+            eventManager.RemoveListener<OnInteractiveElementPressedEvent>(OnInteractiveElementPressed);
+            eventManager.RemoveListener<OnObjectiveItemTriggerEnterEvent>(OnObjectiveItemTriggerEnter);
         }
 
         public static void Reset()
@@ -101,6 +107,12 @@ namespace GameLibrary
             State = previousState;
             hudManager.ResumeGame();
             Time.timeScale = 1f;
+        }
+
+        public static void GoToNextDay()
+        {
+            waveManager.LoadNextDay();
+            mainGameScript.RestartGame();
         }
 
         private static void HandlePauseGame()
@@ -143,12 +155,11 @@ namespace GameLibrary
 
         private static void OnDayEnded(OnDayEndedEvent e)
         {
-            if(waveManager.ArePlayersInSafeZone() && waveManager.CollectedEnoughObjectives())
+            if(waveManager.IsPlayerInSafeZone() && waveManager.CollectedEnoughObjectives())
             {
-                State = GameState.DayEnded;
-                hudManager.DisplayEndOfDay();
-                waveManager.LoadNextDay();
-                mainGameScript.Invoke("RestartGame", 3f);
+                State = GameState.Shopping;
+                hudManager.DisplayShopMenu();
+                hudManager.DisplayCurrencyAmount(waveManager.Currency);
             }
             else
             {
@@ -170,6 +181,12 @@ namespace GameLibrary
         {
             waveManager.IncreaseCollectedObjectives();
             GameObject.Destroy(e.Objective.gameObject);
+        }
+
+        private static void OnInteractiveElementPressed(OnInteractiveElementPressedEvent e)
+        {
+            if(e.Action == ActionType.EndDay)
+                waveManager.AccelerateEndOfDay();
         }
     }
 }
