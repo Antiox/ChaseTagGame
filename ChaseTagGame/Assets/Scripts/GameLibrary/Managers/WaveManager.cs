@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,7 +35,7 @@ namespace GameLibrary
 
         private WaveManager()
         {
-            CurrentDay = new DayInfo();
+            CurrentDay = new DayInfo(5);
             Player = new Player();
             Enemies = new List<Enemy>();
         }
@@ -103,6 +104,12 @@ namespace GameLibrary
             endofDayMultiplier = 20f;
         }
 
+        public void TriggerLoseObjects()
+        {
+            var playerScript = Player.gameObject.GetComponent<MonoBehaviour>();
+            playerScript.StartCoroutine(LoseObjects(CurrentDay.ObjectsCollected));
+        }
+
         private void SpawnEnemies()
         {
             for (int i = 0; i < CurrentDay.Number; i++)
@@ -116,7 +123,28 @@ namespace GameLibrary
         {
             for (int i = 0; i < (CurrentDay.RequiredObjects + 1); i++)
             {
-                GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Key"), Utility.GetRandomNavMeshPosition(), Quaternion.identity);
+                var spawnPosition = Utility.GetRandomNavMeshPosition() + Vector3.up;
+                GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Key"), spawnPosition, Quaternion.identity);
+            }
+        }
+
+        private IEnumerator LoseObjects(float amount)
+        {
+            for (int i = 0; i < amount; i++)
+            {
+                var spreadFactor = 10f;
+                var spreadX = Vector3.forward * UnityEngine.Random.Range(-spreadFactor, spreadFactor);
+                var spreadZ = Vector3.left * UnityEngine.Random.Range(-spreadFactor, spreadFactor);
+                var upDirection = Vector3.up * 30f;
+                var spawnPosition = Player.gameObject.transform.position + Vector3.up * 3f;
+
+                var key = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Key"), spawnPosition , Quaternion.identity);
+                var rigidbody = key.GetComponent<Rigidbody>();
+                rigidbody.useGravity = true;
+                rigidbody.AddForce(spreadX + spreadZ + upDirection, ForceMode.VelocityChange);
+                rigidbody.AddTorque(Utility.GetRandomTorque(180f), ForceMode.VelocityChange);
+                CurrentDay.ObjectsCollected--;
+                yield return new WaitForSeconds(0.4f / amount);
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,16 +42,17 @@ namespace GameLibrary
         public static Vector3 GetRandomNavMeshPosition()
         {
             var navMeshData = NavMesh.CalculateTriangulation();
-            var maxIndices = navMeshData.indices.Length - 3;
-            var firstVertexSelected = UnityEngine.Random.Range(0, maxIndices);
-            var secondVertexSelected = UnityEngine.Random.Range(0, maxIndices);
-            var firstVertexPosition = navMeshData.vertices[navMeshData.indices[firstVertexSelected]];
-            var secondVertexPosition = navMeshData.vertices[navMeshData.indices[secondVertexSelected]];
+            var randomVertex = UnityEngine.Random.Range(0, navMeshData.vertices.Length);
+            var randomPoint = navMeshData.vertices[randomVertex] + UnityEngine.Random.insideUnitSphere * 20f;
 
-            if ((int)firstVertexPosition.x == (int)secondVertexPosition.x || (int)firstVertexPosition.z == (int)secondVertexPosition.z)
+            NavMesh.SamplePosition(randomPoint, out var hit, 20f, 1);
+
+            NavMesh.FindClosestEdge(hit.position, out var edge, 1);
+
+            if (hit.position == edge.position)
                 return GetRandomNavMeshPosition();
-            else
-                return Vector3.Lerp(firstVertexPosition, secondVertexPosition, UnityEngine.Random.Range(0.05f, 0.95f));
+
+            return hit.position;
         }
     }
 }

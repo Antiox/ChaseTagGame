@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using System;
 using System.Collections;
+using UnityEngine.AI;
 
 public class GameScript : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class GameScript : MonoBehaviour
         Time.timeScale = 1f;
         GameManager.Start();
 
-        StartCoroutine(SpawnPowerUp(5f));
+        //StartCoroutine(SpawnPowerUp(5f));
     }
 
     void Update()

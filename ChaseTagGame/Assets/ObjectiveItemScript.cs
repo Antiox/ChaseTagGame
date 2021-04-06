@@ -14,5 +14,13 @@ namespace GameLibrary
                 EventManager.Instance.Dispatch(e);
             }
         }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            if(collision.collider.CompareTag(GameTags.Enemy))
+            {
+                Physics.IgnoreCollision(collision.collider, GetComponent<Collider>());
+            }
+        }
     }
 }

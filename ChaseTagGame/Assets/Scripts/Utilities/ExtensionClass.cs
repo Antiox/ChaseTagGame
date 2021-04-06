@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -96,6 +97,38 @@ namespace GameLibrary
         {
             body.AddForce(body.transform.forward * slideForce, ForceMode.Acceleration);
         }
+        #endregion
+
+        #region Vector3
+
+        public static Vector3 Sum(this IEnumerable<Vector3> vectors)
+        {
+            var result = Vector3.zero;
+            foreach (var v in vectors)
+                result = result + v;
+            return result;
+        }
+
+        public static int Count(this IEnumerable<Vector3> vectors)
+        {
+            var c = vectors as ICollection<Vector3>;
+            if (c != null)
+                return c.Count;
+
+            var result = 0;
+            using (IEnumerator<Vector3> enumerator = vectors.GetEnumerator())
+            {
+                while (enumerator.MoveNext())
+                    result++;
+            }
+            return result;
+        }
+
+        public static Vector3 Average(this IEnumerable<Vector3> vectors)
+        {
+            return vectors.Sum() / vectors.Count();
+        }
+
         #endregion
     }
 }

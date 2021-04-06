@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 640092050213692656}
   - component: {fileID: 640092050213692657}
   - component: {fileID: 640092050213692669}
-  m_Layer: 7
+  m_Layer: 11
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -112,7 +112,7 @@ GameObject:
   - component: {fileID: 640092050901888882}
   - component: {fileID: 640092050901888883}
   - component: {fileID: 640092050901888880}
-  m_Layer: 7
+  m_Layer: 11
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -206,7 +206,7 @@ GameObject:
   m_Component:
   - component: {fileID: 640092051347047986}
   - component: {fileID: 640092051347047997}
-  m_Layer: 7
+  m_Layer: 11
   m_Name: ProximityTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}

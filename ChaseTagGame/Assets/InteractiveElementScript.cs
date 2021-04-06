@@ -46,7 +46,7 @@ namespace GameLibrary
 
         private void OnTriggerStay(Collider other)
         {
-            buttonIsActivated = other.CompareTag(GameTags.Player) && IsPlayerFacingButton();
+            buttonIsActivated = other.CompareTag(GameTags.Player) && IsPlayerFacingButton() && GameManager.State == GameState.InGame;
             tooltip.enabled = buttonIsActivated;
             tooltip.text = tooltipText;
         }

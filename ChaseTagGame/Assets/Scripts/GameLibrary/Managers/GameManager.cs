@@ -126,6 +126,11 @@ namespace GameLibrary
             }
         }
 
+        private static void LoseObjects()
+        {
+            waveManager.TriggerLoseObjects();
+        }
+
 
 
 
@@ -143,8 +148,10 @@ namespace GameLibrary
             {
                 if (powerUpManager.IsEntityShielded(e.Entity))
                     powerUpManager.RemovePowerUpFromEntity(e.Entity, PowerUpType.Shield);
-                else
+                else if(waveManager.CurrentDay.ObjectsCollected == 0)
                     GameOver();
+                else
+                    LoseObjects();
             }
         }
 
