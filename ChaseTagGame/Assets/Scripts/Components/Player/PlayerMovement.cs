@@ -21,7 +21,7 @@ namespace GameLibrary
         [SerializeField] private float RunningMultiplier;
         [SerializeField] private float SlideForce;
         [SerializeField] private float MaxSlopeAngle = 50f;
-        private float slopeForce = 50f;
+        private readonly float slopeForce = 50f;
         private bool canWalkOnSlope;
         private float CurrentRunningSpeed { get { return playerInputs.IsRunning ? RunningMultiplier : 1f; } }
         private Vector3 playerMovement { get { return playerDirection * MovementSpeed; } }
@@ -33,7 +33,7 @@ namespace GameLibrary
         [SerializeField] private float airDrag;
         [SerializeField] private float airResistance;
         [SerializeField] private Vector3 gravity;
-        private float minAirTime = 0.2f;
+        private readonly float minAirTime = 0.2f;
         private float currentAirTime;
         private bool isGrounded;
         public bool IsBumped { get; set; }
@@ -52,7 +52,7 @@ namespace GameLibrary
         private bool reachedTop;
         private bool climbEndInProgress;
         private float climbEndTimer;
-        private float maxClimbTime = 15f;
+        private readonly float maxClimbTime = 15f;
         private float climbingTimer;
         private Vector3 climbEndDestination;
         private Vector3 frontWallNormal;
@@ -173,11 +173,11 @@ namespace GameLibrary
                 return airDrag;
             if (!isGrounded)
                 return airDrag;
-            else if (isGrounded && !playerInputs.IsMoving)
+            else if (!playerInputs.IsMoving)
                 return groundDrag * 4f;
-            else if (isGrounded && playerInputs.IsSliding)
+            else if (playerInputs.IsSliding)
                 return groundDrag / 3f;
-            else if (isGrounded && playerInputs.IsMoving)
+            else if (playerInputs.IsMoving)
                 return groundDrag;
 
             return 2f;

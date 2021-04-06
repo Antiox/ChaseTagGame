@@ -105,14 +105,13 @@ namespace GameLibrary
         {
             var result = Vector3.zero;
             foreach (var v in vectors)
-                result = result + v;
+                result += v;
             return result;
         }
 
         public static int Count(this IEnumerable<Vector3> vectors)
         {
-            var c = vectors as ICollection<Vector3>;
-            if (c != null)
+            if (vectors is ICollection<Vector3> c)
                 return c.Count;
 
             var result = 0;

@@ -44,9 +44,7 @@ namespace GameLibrary
             var navMeshData = NavMesh.CalculateTriangulation();
             var randomVertex = UnityEngine.Random.Range(0, navMeshData.vertices.Length);
             var randomPoint = navMeshData.vertices[randomVertex] + UnityEngine.Random.insideUnitSphere * 20f;
-
             NavMesh.SamplePosition(randomPoint, out var hit, 20f, 1);
-
             NavMesh.FindClosestEdge(hit.position, out var edge, 1);
 
             if (hit.position == edge.position)

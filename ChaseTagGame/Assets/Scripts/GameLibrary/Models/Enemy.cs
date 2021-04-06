@@ -9,11 +9,11 @@ namespace GameLibrary
 {
     public class Enemy
     {
-        public GameObject gameObject { get; set; }
+        public GameObject GameObject { get; set; }
 
         public Enemy(GameObject o)
         {
-            gameObject = o;
+            GameObject = o;
         }
     }
 }

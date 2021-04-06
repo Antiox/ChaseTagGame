@@ -6,49 +6,52 @@ using System;
 using System.Collections;
 using UnityEngine.AI;
 
-public class GameScript : MonoBehaviour
+namespace GameLibrary
 {
-    void Start()
+
+    public class GameScript : MonoBehaviour
     {
-        Time.timeScale = 1f;
-        GameManager.Start();
-
-        //StartCoroutine(SpawnPowerUp(5f));
-    }
-
-    void Update()
-    {
-        GameManager.Update();
-    }
-
-    void OnDestroy()
-    {
-        GameManager.OnDestroy();
-        StopCoroutine(SpawnPowerUp(5f));
-    }
-
-
-    public void RestartGame()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
-    public void GoToMainMenu()
-    {
-        SceneManager.LoadScene(0);
-    }
-
-
-    private static IEnumerator SpawnPowerUp(float delay)
-    {
-        while (true)
+        void Start()
         {
-            var e = new OnPowerUpSpawnRequestedEvent();
-            EventManager.Instance.Dispatch(e);
-            yield return new WaitForSeconds(delay);
+            Time.timeScale = 1f;
+            GameManager.Start();
+            StartCoroutine(SpawnPowerUp(5f));
+        }
 
-            if (GameManager.State == GameState.Shopping || GameManager.State == GameState.GameOver)
-                break;
+        void Update()
+        {
+            GameManager.Update();
+        }
+
+        void OnDestroy()
+        {
+            GameManager.OnDestroy();
+            StopCoroutine(SpawnPowerUp(5f));
+        }
+
+
+        public void RestartGame()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+
+        public void GoToMainMenu()
+        {
+            SceneManager.LoadScene(0);
+        }
+
+
+        private static IEnumerator SpawnPowerUp(float delay)
+        {
+            while (true)
+            {
+                var e = new OnPowerUpSpawnRequestedEvent();
+                EventManager.Instance.Dispatch(e);
+                yield return new WaitForSeconds(delay);
+
+                if (GameManager.State == GameState.Shopping || GameManager.State == GameState.GameOver)
+                    break;
+            }
         }
     }
 }

@@ -13,7 +13,7 @@ namespace GameLibrary
         [SerializeField, Range(0f, 1f)] private float tolerance;
         [SerializeField, Range(0f, 5f)] private float minDistance;
         [SerializeField] private float expandSpeed = 16f;
-        private float expandDistance = 0.18f;
+        private readonly float expandDistance = 0.18f;
 
         private Camera mainCamera;
         private GameObject player;
@@ -51,7 +51,7 @@ namespace GameLibrary
             tooltip.text = tooltipText;
         }
 
-        private void OnTriggerExit(Collider other)
+        private void OnTriggerExit()
         {
             tooltip.enabled = false;
         }

@@ -12,13 +12,13 @@ namespace GameLibrary
 {
     public static class GameManager
     {
-        public static PowerUpManager powerUpManager { get; private set; } = PowerUpManager.Instance;
-        public static EventManager eventManager { get; private set; } = EventManager.Instance;
-        public static WaveManager waveManager { get; private set; } = WaveManager.Instance;
-        public static SettingsManager settingsManager { get; private set; } = SettingsManager.Instance;
-        public static HudManagerScript hudManager { get; private set; }
-        public static GameObject mainGameObject { get; private set; }
-        public static GameScript mainGameScript { get; private set; }
+        public static PowerUpManager PowerUpManager { get; private set; } = PowerUpManager.Instance;
+        public static EventManager EventManager { get; private set; } = EventManager.Instance;
+        public static WaveManager WaveManager { get; private set; } = WaveManager.Instance;
+        public static SettingsManager SettingsManager { get; private set; } = SettingsManager.Instance;
+        public static HudManagerScript HudManager { get; private set; }
+        public static GameObject MainGameObject { get; private set; }
+        public static GameScript MainGameScript { get; private set; }
         public static GameState State { get; private set; }
 
 
@@ -29,23 +29,23 @@ namespace GameLibrary
 
         public static void Start()
         {
-            waveManager.Start();
-            settingsManager.Start();
+            WaveManager.Start();
+            SettingsManager.Start();
 
 
-            mainGameObject = GameObject.Find("GameManager");
-            mainGameScript = mainGameObject.GetComponent<GameScript>();
+            MainGameObject = GameObject.Find("GameManager");
+            MainGameScript = MainGameObject.GetComponent<GameScript>();
 
-            hudManager = mainGameObject.GetComponent<HudManagerScript>();
+            HudManager = MainGameObject.GetComponent<HudManagerScript>();
 
-            eventManager.AddListener<OnPowerUpTriggerEnterEvent>(OnPowerUpTriggerEnter);
-            eventManager.AddListener<OnEnemyTriggerEnterEvent>(OnEnemyTriggerEnter);
-            eventManager.AddListener<OnPointsAddedEvent>(OnPointsAdded);
-            eventManager.AddListener<OnDayEndedEvent>(OnDayEnded);
-            eventManager.AddListener<OnTimeAddedEvent>(OnTimeAdded);
-            eventManager.AddListener<OnPlayerExitSafeZoneEvent>(OnPlayerExitSafeZone);
-            eventManager.AddListener<OnObjectiveItemTriggerEnterEvent>(OnObjectiveItemTriggerEnter);
-            eventManager.AddListener<OnInteractiveElementPressedEvent>(OnInteractiveElementPressed);
+            EventManager.AddListener<OnPowerUpTriggerEnterEvent>(OnPowerUpTriggerEnter);
+            EventManager.AddListener<OnEnemyTriggerEnterEvent>(OnEnemyTriggerEnter);
+            EventManager.AddListener<OnPointsAddedEvent>(OnPointsAdded);
+            EventManager.AddListener<OnDayEndedEvent>(OnDayEnded);
+            EventManager.AddListener<OnTimeAddedEvent>(OnTimeAdded);
+            EventManager.AddListener<OnPlayerExitSafeZoneEvent>(OnPlayerExitSafeZone);
+            EventManager.AddListener<OnObjectiveItemTriggerEnterEvent>(OnObjectiveItemTriggerEnter);
+            EventManager.AddListener<OnInteractiveElementPressedEvent>(OnInteractiveElementPressed);
 
             State = GameState.WaitingPlayer;
         }
@@ -55,42 +55,38 @@ namespace GameLibrary
         {
             if (State == GameState.InGame)
             {
-                powerUpManager.Update();
-                waveManager.Update();
-            }
-            else if(State == GameState.Shopping)
-            {
-
+                PowerUpManager.Update();
+                WaveManager.Update();
             }
 
             HandlePauseGame();
-            hudManager.DisplayDayInfo(waveManager.CurrentDay);
+            HudManager.DisplayDayInfo(WaveManager.CurrentDay);
         }
 
         public static void OnDestroy()
         {
-            settingsManager.OnDestroy();
-            eventManager.RemoveListener<OnPowerUpTriggerEnterEvent>(OnPowerUpTriggerEnter);
-            eventManager.RemoveListener<OnEnemyTriggerEnterEvent>(OnEnemyTriggerEnter);
-            eventManager.RemoveListener<OnPointsAddedEvent>(OnPointsAdded);
-            eventManager.RemoveListener<OnDayEndedEvent>(OnDayEnded);
-            eventManager.RemoveListener<OnPlayerExitSafeZoneEvent>(OnPlayerExitSafeZone);
-            eventManager.RemoveListener<OnInteractiveElementPressedEvent>(OnInteractiveElementPressed);
-            eventManager.RemoveListener<OnObjectiveItemTriggerEnterEvent>(OnObjectiveItemTriggerEnter);
+            SettingsManager.OnDestroy();
+            EventManager.RemoveListener<OnPowerUpTriggerEnterEvent>(OnPowerUpTriggerEnter);
+            EventManager.RemoveListener<OnEnemyTriggerEnterEvent>(OnEnemyTriggerEnter);
+            EventManager.RemoveListener<OnPointsAddedEvent>(OnPointsAdded);
+            EventManager.RemoveListener<OnDayEndedEvent>(OnDayEnded);
+            EventManager.RemoveListener<OnPlayerExitSafeZoneEvent>(OnPlayerExitSafeZone);
+            EventManager.RemoveListener<OnInteractiveElementPressedEvent>(OnInteractiveElementPressed);
+            EventManager.RemoveListener<OnObjectiveItemTriggerEnterEvent>(OnObjectiveItemTriggerEnter);
         }
 
         public static void Reset()
         {
-            waveManager.Reset();
+            WaveManager.Reset();
         }
 
 
         private static void GameOver()
         {
             State = GameState.GameOver;
-            hudManager.DisplayGameOver();
+            HudManager.DisplayGameOver();
             
-            var e = new OnGameOverEvent(waveManager.CurrentDay);
+            var e = new OnGameOverEvent(WaveManager.CurrentDay);
             EventManager.Instance.Dispatch(e);
         }
 
@@ -98,21 +94,21 @@ namespace GameLibrary
         {
             previousState = State;
             State = GameState.Paused;
-            hudManager.PauseGame();
+            HudManager.PauseGame();
             Time.timeScale = 0;
         }
 
         public static void ResumeGame()
         {
             State = previousState;
-            hudManager.ResumeGame();
+            HudManager.ResumeGame();
             Time.timeScale = 1f;
         }
 
         public static void GoToNextDay()
         {
-            waveManager.LoadNextDay();
-            mainGameScript.RestartGame();
+            WaveManager.LoadNextDay();
+            MainGameScript.RestartGame();
         }
 
         private static void HandlePauseGame()
@@ -128,7 +124,7 @@ namespace GameLibrary
 
         private static void LoseObjects()
         {
-            waveManager.TriggerLoseObjects();
+            WaveManager.TriggerLoseObjects();
         }
 
 
@@ -138,7 +134,7 @@ namespace GameLibrary
         {
             var powerUpComponent = e.PowerUp.GetComponent<PowerUpScript>();
             var p = powerUpComponent.powerUp;
-            powerUpManager.AddPowerUpToEntity(e.Entity, p);
+            PowerUpManager.AddPowerUpToEntity(e.Entity, p);
             UnityEngine.Object.Destroy(e.PowerUp);
         }
 
@@ -146,9 +142,9 @@ namespace GameLibrary
         {
             if (e.Entity.CompareTag(GameTags.Player) && State == GameState.InGame)
             {
-                if (powerUpManager.IsEntityShielded(e.Entity))
-                    powerUpManager.RemovePowerUpFromEntity(e.Entity, PowerUpType.Shield);
-                else if(waveManager.CurrentDay.ObjectsCollected == 0)
+                if (PowerUpManager.IsEntityShielded(e.Entity))
+                    PowerUpManager.RemovePowerUpFromEntity(e.Entity, PowerUpType.Shield);
+                else if(WaveManager.CurrentDay.ObjectsCollected == 0)
                     GameOver();
                 else
                     LoseObjects();
@@ -162,11 +158,11 @@ namespace GameLibrary
 
         private static void OnDayEnded(OnDayEndedEvent e)
         {
-            if(waveManager.IsPlayerInSafeZone() && waveManager.CollectedEnoughObjectives())
+            if(WaveManager.IsPlayerInSafeZone() && WaveManager.CollectedEnoughObjectives())
             {
                 State = GameState.Shopping;
-                hudManager.DisplayShopMenu();
-                hudManager.DisplayCurrencyAmount(waveManager.Currency);
+                HudManager.DisplayShopMenu();
+                HudManager.DisplayCurrencyAmount(WaveManager.Currency);
             }
             else
             {
@@ -176,7 +172,7 @@ namespace GameLibrary
 
         private static void OnTimeAdded(OnTimeAddedEvent e)
         {
-            waveManager.ExtendDuration(e.Amount);
+            WaveManager.ExtendDuration(e.Amount);
         }
 
         private static void OnPlayerExitSafeZone(OnPlayerExitSafeZoneEvent e)
@@ -186,14 +182,14 @@ namespace GameLibrary
 
         private static void OnObjectiveItemTriggerEnter(OnObjectiveItemTriggerEnterEvent e)
         {
-            waveManager.IncreaseCollectedObjectives();
+            WaveManager.IncreaseCollectedObjectives();
             GameObject.Destroy(e.Objective.gameObject);
         }
 
         private static void OnInteractiveElementPressed(OnInteractiveElementPressedEvent e)
         {
             if(e.Action == ActionType.EndDay)
-                waveManager.AccelerateEndOfDay();
+                WaveManager.AccelerateEndOfDay();
         }
     }
 }

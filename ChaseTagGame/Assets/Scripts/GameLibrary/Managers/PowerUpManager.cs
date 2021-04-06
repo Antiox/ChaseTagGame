@@ -78,11 +78,12 @@ namespace GameLibrary
 
         private List<IPowerUp> GetAllPowerUps()
         {
-            var buffs = new List<IPowerUp>();
-
-            buffs.Add(new PowerUp(PowerUpType.Shield, PowerUpFaction.Allies));
-            buffs.Add(new PowerUp(PowerUpType.Skull, PowerUpFaction.Enemy));
-            buffs.Add(new ClockPowerUp(PowerUpType.Clock, PowerUpFaction.Allies, 15));
+            var buffs = new List<IPowerUp>
+            {
+                new PowerUp(PowerUpType.Shield, PowerUpFaction.Allies),
+                new PowerUp(PowerUpType.Skull, PowerUpFaction.Enemy),
+                new ClockPowerUp(PowerUpType.Clock, PowerUpFaction.Allies, 15)
+            };
 
             return buffs;
         }

@@ -83,7 +83,7 @@ public class PistonScript : MonoBehaviour
         var gravity = Vector3.down * 40f * timestep * timestep;
         var position = initialPosition;
 
-        if (segments == null || segments.Length != maxSegmentCount)
+        if (segments.Length != maxSegmentCount)
             segments = new Vector3[maxSegmentCount];
 
         segments[0] = position;
