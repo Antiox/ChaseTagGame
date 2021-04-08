@@ -16,6 +16,7 @@ namespace GameLibrary
         public bool IsSliding { get; private set; }
         public bool IsMoving { get; private set; }
         public bool IsPressingActionButton { get; private set; }
+        public bool CanClimb { get { return canClimb; } }
 
         private static bool canJump;
         private static bool canSlide;

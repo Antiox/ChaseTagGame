@@ -101,7 +101,7 @@ namespace GameLibrary
             currentAirTime = isGrounded ? 0 : (currentAirTime + Time.deltaTime);
             climbEndInProgress = reachedTop || climbEndInProgress;
             previousClimbingState = isClimbing;
-            isClimbing = isAgainstWall && !isGrounded && rigidBody.velocity.magnitude > 0 && playerInputs.IsHoldingJump && climbingTimer <= maxClimbTime;
+            isClimbing = isAgainstWall && !isGrounded && rigidBody.velocity.magnitude > 0 && playerInputs.IsHoldingJump && climbingTimer <= maxClimbTime && playerInputs.CanClimb;
             reachedTop = previousClimbingState && !isClimbing && !isGrounded && playerInputs.IsHoldingJump && climbingTimer <= maxClimbTime;
             rigidBody.drag = GetCurrentDrag();
 
