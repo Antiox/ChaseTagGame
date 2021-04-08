@@ -4,26 +4,30 @@ using UnityEngine.AI;
 using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
+using UnityEditor;
 
 public class EnemyScript : MonoBehaviour
 {
-    private Transform target;
     private NavMeshAgent navMeshAgent;
+    private List<Vector3> path;
 
 
     void Start()
     {
+        path = Utility.GetRandomNavMeshPath();
         navMeshAgent = GetComponent<NavMeshAgent>();
-        target = GameObject.FindGameObjectWithTag(GameTags.Player).transform;
-        StartCoroutine(DetermineTarget());
+        StartCoroutine(FollowPath());
     }
 
-    void Update()
+    private void OnDrawGizmos()
     {
-        if(target != null)
-            navMeshAgent.SetDestination(target.position);
+        for (int i = 0; i < path.Count; i++)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(path[i], 0.2f);
+            Handles.Label(path[i], i.ToString());
+        }
     }
-
 
     private void OnTriggerEnter(Collider other)
     {
@@ -31,22 +35,34 @@ public class EnemyScript : MonoBehaviour
         EventManager.Instance.Dispatch(e);
     }
 
-    private IEnumerator DetermineTarget()
+    private IEnumerator FollowPath()
     {
         while (true)
         {
-            target = GetClosestTarget();
-            yield return new WaitForSeconds(2f);
+            for (int i = 0; i < path.Count; i++)
+            {
+                var closestEntity = GetClosestTarget();
+                var distanceToNextPathPoint = (transform.position - path[i]).sqrMagnitude;
+                var distanceToClosestEntity = (transform.position - closestEntity).sqrMagnitude;
+                var minDistance = Mathf.Min(distanceToNextPathPoint, distanceToClosestEntity);
+                var closestWaypoint = Utility.ApproximatelyEquals(distanceToNextPathPoint, minDistance) ? path[i] : closestEntity;
+
+                navMeshAgent.SetDestination(closestWaypoint);
+                while ((transform.position - closestWaypoint).sqrMagnitude > 1.1f * 1.1f)
+                {
+                    yield return null;
+                }
+            }
         }
     }
 
-    private Transform GetClosestTarget()
+    private Vector3 GetClosestTarget()
     {
         var players = GameObject.FindGameObjectsWithTag(GameTags.Player);
         var powerUps = GameObject.FindGameObjectsWithTag(GameTags.PowerUp)?.Where(p => p.GetComponent<PowerUpScript>()?.faction == PowerUpFaction.Enemy);
         var entites = players.Concat(powerUps);
 
-        Transform tMin = null;
+        var tMin = Vector3.positiveInfinity;
         var minDist = Mathf.Infinity;
         var currentPos = transform.position;
         foreach (var t in entites)
@@ -54,7 +70,7 @@ public class EnemyScript : MonoBehaviour
             float dist = Vector3.Distance(t.transform.position, currentPos);
             if (dist < minDist)
             {
-                tMin = t.transform;
+                tMin = t.transform.position;
                 minDist = dist;
             }
         }

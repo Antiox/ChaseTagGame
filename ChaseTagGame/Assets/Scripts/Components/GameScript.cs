@@ -5,6 +5,7 @@ using TMPro;
 using System;
 using System.Collections;
 using UnityEngine.AI;
+using UnityEditor;
 
 namespace GameLibrary
 {
@@ -39,7 +40,6 @@ namespace GameLibrary
         {
             SceneManager.LoadScene(0);
         }
-
 
         private static IEnumerator SpawnPowerUp(float delay)
         {

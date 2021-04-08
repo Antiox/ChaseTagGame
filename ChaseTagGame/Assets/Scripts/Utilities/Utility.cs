@@ -52,5 +52,17 @@ namespace GameLibrary
 
             return hit.position;
         }
+
+        public static List<Vector3> GetRandomNavMeshPath()
+        {
+            var path = new List<Vector3>();
+
+            for (int i = 0; i < UnityEngine.Random.Range(5f, 10f); i++)
+            {
+                path.Add(GetRandomNavMeshPosition());
+            }
+
+            return path;
+        }
     }
 }
