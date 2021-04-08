@@ -61,6 +61,10 @@ namespace GameLibrary
             IsSliding = false;
             IsSlideTriggered = false;
             IsMoving = HorizontalAxis != 0 || VerticalAxis != 0;
+            canJump = false;
+            canSlide = false;
+            canRun = false;
+            canClimb = false;
         }
 
         private void OnSkillBought(OnSkillBoughtEvent e)

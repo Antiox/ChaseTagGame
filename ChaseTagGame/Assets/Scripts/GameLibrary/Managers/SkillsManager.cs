@@ -42,7 +42,7 @@ namespace GameLibrary
 
         public void Reset()
         {
-            OwnedSkills = new List<Skill>();
+            OwnedSkills.Clear();
         }
 
         private Skill CreateSkill(SkillType type)
