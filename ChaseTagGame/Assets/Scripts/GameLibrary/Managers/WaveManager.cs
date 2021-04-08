@@ -35,7 +35,7 @@ namespace GameLibrary
 
         private WaveManager()
         {
-            CurrentDay = new DayInfo(5);
+            CurrentDay = new DayInfo();
             Player = new Player();
             Enemies = new List<Enemy>();
         }
@@ -130,7 +130,7 @@ namespace GameLibrary
 
         private IEnumerator LoseObjects(float amount)
         {
-            for (int i = 0; i < amount; i++)
+            for (float i = 0f; i < amount; i++)
             {
                 var spreadFactor = 10f;
                 var spreadX = Vector3.forward * UnityEngine.Random.Range(-spreadFactor, spreadFactor);

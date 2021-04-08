@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -18,6 +19,7 @@ namespace GameLibrary
         private TextMeshProUGUI interactiveElementLabel;
 
 
+
         public void Start()
         {
             dayInfoLabel = GameObject.Find("DayInfoLabel").GetComponent<TextMeshProUGUI>();
@@ -33,6 +35,13 @@ namespace GameLibrary
 
 
             StartCoroutine(UpdateFps());
+
+            EventManager.Instance.AddListener<OnSkillBoughtEvent>(OnSkillBought);
+        }
+
+        public void OnDestroy()
+        {
+            EventManager.Instance.RemoveListener<OnSkillBoughtEvent>(OnSkillBought);
         }
 
 
@@ -74,6 +83,17 @@ namespace GameLibrary
             currencyAmountLabel.text = $"Currency : {amount}";
         }
 
+        public void DisplaySkills(List<Skill> skills)
+        {
+            var skillsContainer = shopMenu.transform.Find("SkillsContainer");
+
+            foreach (var s in skills)
+            {
+                var skillGameObject = Instantiate(Resources.Load<GameObject>("Prefabs/SkillPanel"), skillsContainer.transform);
+                skillGameObject.GetComponent<SkillRendererScript>().Skill = s;
+            }
+        }
+
         private IEnumerator UpdateFps()
         {
             while (true)
@@ -81,6 +101,11 @@ namespace GameLibrary
                 fpsCounterLabel.text = (1f / Time.unscaledDeltaTime).ToString("N0") + " FPS";
                 yield return new WaitForSeconds(0.5f);
             }
+        }
+
+        private void OnSkillBought(OnSkillBoughtEvent e)
+        {
+            Destroy(e.SkillPanel);
         }
     }
 }

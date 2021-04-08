@@ -42,8 +42,9 @@ public class EnemyScript : MonoBehaviour
 
     private Transform GetClosestTarget()
     {
-        var powerUps = GameObject.FindGameObjectsWithTag(GameTags.PowerUp);
-        var entites = powerUps.Concat(GameObject.FindGameObjectsWithTag(GameTags.Player));
+        var players = GameObject.FindGameObjectsWithTag(GameTags.Player);
+        var powerUps = GameObject.FindGameObjectsWithTag(GameTags.PowerUp)?.Where(p => p.GetComponent<PowerUpScript>()?.faction == PowerUpFaction.Enemy);
+        var entites = players.Concat(powerUps);
 
         Transform tMin = null;
         var minDist = Mathf.Infinity;

@@ -17,10 +17,15 @@ namespace GameLibrary
         public bool IsMoving { get; private set; }
         public bool IsPressingActionButton { get; private set; }
 
+        private static bool canJump;
+        private static bool canSlide;
+        private static bool canRun;
+        private static bool canClimb;
 
         void Start()
         {
             EventManager.Instance.AddListener<OnGameOverEvent>(OnGameOver);
+            EventManager.Instance.AddListener<OnSkillBoughtEvent>(OnSkillBought);
         }
 
         void Update()
@@ -29,11 +34,11 @@ namespace GameLibrary
             {
                 HorizontalAxis = Input.GetAxisRaw("Horizontal");
                 VerticalAxis = Input.GetAxisRaw("Vertical");
-                IsRunning = Input.GetButton("Run");
-                IsJumping = Input.GetButtonDown("Jump");
+                IsRunning = Input.GetButton("Run")&& canRun;
+                IsJumping = Input.GetButtonDown("Jump") && canJump;
                 IsHoldingJump = Input.GetButton("Jump");
-                IsSliding = Input.GetButton("Slide");
-                IsSlideTriggered = Input.GetButtonDown("Slide");
+                IsSliding = Input.GetButton("Slide") && canSlide;
+                IsSlideTriggered = Input.GetButtonDown("Slide") && canSlide;
                 IsMoving = HorizontalAxis != 0 || VerticalAxis != 0;
             }
         }
@@ -41,6 +46,7 @@ namespace GameLibrary
         void OnDestroy()
         {
             EventManager.Instance.RemoveListener<OnGameOverEvent>(OnGameOver);
+            EventManager.Instance.RemoveListener<OnSkillBoughtEvent>(OnSkillBought);
         }
 
 
@@ -54,6 +60,17 @@ namespace GameLibrary
             IsSliding = false;
             IsSlideTriggered = false;
             IsMoving = HorizontalAxis != 0 || VerticalAxis != 0;
+        }
+
+        private void OnSkillBought(OnSkillBoughtEvent e)
+        {
+            switch (e.Skill.type)
+            {
+                case SkillType.Jump: canJump = true; break;
+                case SkillType.Climb: canClimb = true; break;
+                case SkillType.Slide: canSlide = true; break;
+                case SkillType.Run: canRun = true; break;
+            }
         }
     }
 }

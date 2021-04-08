@@ -8,15 +8,23 @@ namespace GameLibrary
 {
     public class SkillRendererScript : MonoBehaviour
     {
-        [SerializeField] private Skill skill;
+        public Skill Skill;
         [SerializeField] private TextMeshProUGUI skillNameLabel;
         [SerializeField] private Image skillArtwork;
+        [SerializeField] private TextMeshProUGUI skillPriceLabel;
 
 
         private void Start()
         {
-            skillNameLabel.text = skill.name;
-            skillArtwork.sprite = skill.artwork;
+            skillNameLabel.text = Skill.name;
+            skillArtwork.sprite = Skill.artwork;
+            skillPriceLabel.text = $"Buy - {Skill.price}";
+        }
+
+        public void BuySkillButtonClicked()
+        {
+            var e = new OnSkillBoughtEvent(Skill, gameObject);
+            EventManager.Instance.Dispatch(e);
         }
     }
 }

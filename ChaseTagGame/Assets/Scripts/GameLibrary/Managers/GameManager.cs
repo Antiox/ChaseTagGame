@@ -16,6 +16,7 @@ namespace GameLibrary
         public static EventManager EventManager { get; private set; } = EventManager.Instance;
         public static WaveManager WaveManager { get; private set; } = WaveManager.Instance;
         public static SettingsManager SettingsManager { get; private set; } = SettingsManager.Instance;
+        public static SkillsManager SkillsManager { get; private set; } = SkillsManager.Instance;
         public static HudManagerScript HudManager { get; private set; }
         public static GameObject MainGameObject { get; private set; }
         public static GameScript MainGameScript { get; private set; }
@@ -31,6 +32,7 @@ namespace GameLibrary
         {
             WaveManager.Start();
             SettingsManager.Start();
+            SkillsManager.Start();
 
 
             MainGameObject = GameObject.Find("GameManager");
@@ -66,6 +68,7 @@ namespace GameLibrary
         public static void OnDestroy()
         {
             SettingsManager.OnDestroy();
+            SkillsManager.OnDestroy();
             EventManager.RemoveListener<OnPowerUpTriggerEnterEvent>(OnPowerUpTriggerEnter);
             EventManager.RemoveListener<OnEnemyTriggerEnterEvent>(OnEnemyTriggerEnter);
             EventManager.RemoveListener<OnPointsAddedEvent>(OnPointsAdded);
@@ -78,6 +81,7 @@ namespace GameLibrary
         public static void Reset()
         {
             WaveManager.Reset();
+            SkillsManager.Reset();
         }
 
 
@@ -161,6 +165,7 @@ namespace GameLibrary
             if(WaveManager.IsPlayerInSafeZone() && WaveManager.CollectedEnoughObjectives())
             {
                 State = GameState.Shopping;
+                HudManager.DisplaySkills(SkillsManager.PossibleSkills);
                 HudManager.DisplayShopMenu();
                 HudManager.DisplayCurrencyAmount(WaveManager.Currency);
             }

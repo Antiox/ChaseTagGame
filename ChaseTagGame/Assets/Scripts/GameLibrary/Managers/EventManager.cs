@@ -21,7 +21,7 @@ namespace GameLibrary
                 callbacks[e] = action;
 
                 if (events.TryGetValue(typeof(T), out Action<IGameEvent> internalAction))
-                    events[typeof(T)] = internalAction += action;
+                    events[typeof(T)] = (internalAction += action);
                 else
                     events[typeof(T)] = action;
             }

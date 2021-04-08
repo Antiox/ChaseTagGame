@@ -17,14 +17,13 @@ namespace GameLibrary
 
         private Camera mainCamera;
         private GameObject player;
-        private bool playerIsPressingAction;
         private bool buttonIsActivated;
         private Vector3 buttonInitialPosition;
         private Vector3 buttonTargetPosition;
 
 
 
-        private void Start()
+        void Start()
         {
             mainCamera = Camera.main;
             player = GameObject.FindGameObjectWithTag(GameTags.Player);
@@ -32,9 +31,9 @@ namespace GameLibrary
             buttonTargetPosition = transform.position - (transform.forward * expandDistance);
         }
 
-        private void Update()
+        void Update()
         {
-            playerIsPressingAction = Input.GetButtonDown("Action");
+            var playerIsPressingAction = Input.GetButtonDown("Action");
 
             if (buttonIsActivated && playerIsPressingAction)
             {
@@ -44,14 +43,14 @@ namespace GameLibrary
             }
         }
 
-        private void OnTriggerStay(Collider other)
+        void OnTriggerStay(Collider other)
         {
             buttonIsActivated = other.CompareTag(GameTags.Player) && IsPlayerFacingButton() && GameManager.State == GameState.InGame;
             tooltip.enabled = buttonIsActivated;
             tooltip.text = tooltipText;
         }
 
-        private void OnTriggerExit()
+        void OnTriggerExit()
         {
             tooltip.enabled = false;
         }
