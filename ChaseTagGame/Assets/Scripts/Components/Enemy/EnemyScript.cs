@@ -15,18 +15,9 @@ public class EnemyScript : MonoBehaviour
     void Start()
     {
         path = Utility.GetRandomNavMeshPath();
+        transform.position = path[0];
         navMeshAgent = GetComponent<NavMeshAgent>();
         StartCoroutine(FollowPath());
-    }
-
-    private void OnDrawGizmos()
-    {
-        for (int i = 0; i < path.Count; i++)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawSphere(path[i], 0.2f);
-            Handles.Label(path[i], i.ToString());
-        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -37,22 +28,27 @@ public class EnemyScript : MonoBehaviour
 
     private IEnumerator FollowPath()
     {
+        Vector3 closestWaypoint;
         while (true)
         {
-            for (int i = 0; i < path.Count; i++)
+            if(GameManager.State == GameState.InGame)
             {
-                var closestEntity = GetClosestTarget();
-                var distanceToNextPathPoint = (transform.position - path[i]).sqrMagnitude;
-                var distanceToClosestEntity = (transform.position - closestEntity).sqrMagnitude;
-                var minDistance = Mathf.Min(distanceToNextPathPoint, distanceToClosestEntity);
-                var closestWaypoint = Utility.ApproximatelyEquals(distanceToNextPathPoint, minDistance) ? path[i] : closestEntity;
-
-                navMeshAgent.SetDestination(closestWaypoint);
-                while ((transform.position - closestWaypoint).sqrMagnitude > 1.1f * 1.1f)
+                for (int i = 0; i < path.Count; i++)
                 {
-                    yield return null;
+                    do
+                    {
+                        var closestEntity = GetClosestTarget();
+                        var distanceToNextPathPoint = (transform.position - path[i]).sqrMagnitude;
+                        var distanceToClosestEntity = (transform.position - closestEntity).sqrMagnitude;
+                        var minDistance = Mathf.Min(distanceToNextPathPoint, distanceToClosestEntity);
+                        closestWaypoint = Utility.ApproximatelyEquals(distanceToNextPathPoint, minDistance) ? path[i] : closestEntity;
+                        navMeshAgent.SetDestination(closestWaypoint);
+                        yield return null;
+                    } while ((transform.position - closestWaypoint).sqrMagnitude > 1.1f * 1.1f);
                 }
             }
+
+            yield return null;
         }
     }
 

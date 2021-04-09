@@ -27,6 +27,7 @@ namespace GameLibrary
         {
             EventManager.Instance.AddListener<OnGameOverEvent>(OnGameOver);
             EventManager.Instance.AddListener<OnSkillBoughtEvent>(OnSkillBought);
+            EventManager.Instance.AddListener<OnDayEndedEvent>(OnDayEnded);
         }
 
         void Update()
@@ -47,11 +48,13 @@ namespace GameLibrary
         void OnDestroy()
         {
             EventManager.Instance.RemoveListener<OnGameOverEvent>(OnGameOver);
+            EventManager.Instance.RemoveListener<OnDayEndedEvent>(OnDayEnded);
             EventManager.Instance.RemoveListener<OnSkillBoughtEvent>(OnSkillBought);
         }
 
 
-        private void OnGameOver(OnGameOverEvent obj)
+
+        private void LockInputs()
         {
             HorizontalAxis = 0;
             VerticalAxis = 0;
@@ -65,6 +68,18 @@ namespace GameLibrary
             canSlide = false;
             canRun = false;
             canClimb = false;
+        }
+
+
+
+        private void OnGameOver(OnGameOverEvent e)
+        {
+            LockInputs();
+        }
+
+        private void OnDayEnded(OnDayEndedEvent e)
+        {
+            LockInputs();
         }
 
         private void OnSkillBought(OnSkillBoughtEvent e)
