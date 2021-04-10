@@ -362,6 +362,7 @@ MonoBehaviour:
   skillNameLabel: {fileID: 7153080241080762307}
   skillArtwork: {fileID: 7153080242106963189}
   skillPriceLabel: {fileID: 7153080241482901430}
+  skillBuyButton: {fileID: 7153080240704259925}
 --- !u!1 &7153080241482901424
 GameObject:
   m_ObjectHideFlags: 0

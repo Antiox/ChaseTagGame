@@ -14,7 +14,7 @@ public class EnemyScript : MonoBehaviour
 
     void Start()
     {
-        path = Utility.GetRandomNavMeshPath();
+        path = Utility.GetRandomNavMeshCircularPath();
         transform.position = path[0];
         navMeshAgent = GetComponent<NavMeshAgent>();
         StartCoroutine(FollowPath());

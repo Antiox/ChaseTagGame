@@ -69,6 +69,7 @@ namespace GameLibrary
         {
             SettingsManager.OnDestroy();
             SkillsManager.OnDestroy();
+            WaveManager.OnDestroy();
             EventManager.RemoveListener<OnPowerUpTriggerEnterEvent>(OnPowerUpTriggerEnter);
             EventManager.RemoveListener<OnEnemyTriggerEnterEvent>(OnEnemyTriggerEnter);
             EventManager.RemoveListener<OnPointsAddedEvent>(OnPointsAdded);

@@ -64,10 +64,6 @@ namespace GameLibrary
             IsSliding = false;
             IsSlideTriggered = false;
             IsMoving = HorizontalAxis != 0 || VerticalAxis != 0;
-            canJump = false;
-            canSlide = false;
-            canRun = false;
-            canClimb = false;
         }
 
 
@@ -75,6 +71,10 @@ namespace GameLibrary
         private void OnGameOver(OnGameOverEvent e)
         {
             LockInputs();
+            canJump = false;
+            canSlide = false;
+            canRun = false;
+            canClimb = false;
         }
 
         private void OnDayEnded(OnDayEndedEvent e)

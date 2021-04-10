@@ -106,6 +106,7 @@ namespace GameLibrary
         private void OnSkillBought(OnSkillBoughtEvent e)
         {
             Destroy(e.SkillPanel);
+            DisplayCurrencyAmount(e.NewCurrency);
         }
     }
 }

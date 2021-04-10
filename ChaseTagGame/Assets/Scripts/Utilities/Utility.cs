@@ -68,9 +68,9 @@ namespace GameLibrary
         public static List<Vector3> GetRandomNavMeshCircularPath()
         {
             var path = new List<Vector3>();
-            var pointOffset = UnityEngine.Random.Range(1.5f, 6f);
+            var pointOffset = UnityEngine.Random.Range(1.5f, 4f);
             var points = UnityEngine.Random.Range(3, 15);
-            var radius = UnityEngine.Random.Range(4f, 10f);
+            var radius = UnityEngine.Random.Range(3f, 6f);
             var direction = UnityEngine.Random.value > 0.5f ? -1 : 1;
             var center = GetRandomNavMeshPosition();
 

@@ -10,7 +10,7 @@ namespace GameLibrary
         public new string name;
         public Sprite artwork;
         public string description;
-        public float price;
+        public int price;
         public SkillType type;
     }
 }
