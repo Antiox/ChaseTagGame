@@ -133,6 +133,11 @@ namespace GameLibrary
             WaveManager.TriggerLoseObjects();
         }
 
+        public static bool IsOwningSkill(SkillType type)
+        {
+            return SkillsManager.IsOwningSkill(type);
+        }
+
 
 
 
@@ -179,7 +184,7 @@ namespace GameLibrary
 
         private static void OnTimeAdded(OnTimeAddedEvent e)
         {
-            WaveManager.ExtendDuration(e.Amount);
+            WaveManager.ExtendDayDuration(e.Amount);
         }
 
         private static void OnPlayerExitSafeZone(OnPlayerExitSafeZoneEvent e)

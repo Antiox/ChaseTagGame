@@ -55,7 +55,7 @@ public class EnemyScript : MonoBehaviour
     private Vector3 GetClosestTarget()
     {
         var players = GameObject.FindGameObjectsWithTag(GameTags.Player);
-        var powerUps = GameObject.FindGameObjectsWithTag(GameTags.PowerUp)?.Where(p => p.GetComponent<PowerUpScript>()?.faction == PowerUpFaction.Enemy);
+        var powerUps = GameObject.FindGameObjectsWithTag(GameTags.EnemyPowerUp);
         var entites = players.Concat(powerUps);
 
         var tMin = Vector3.positiveInfinity;

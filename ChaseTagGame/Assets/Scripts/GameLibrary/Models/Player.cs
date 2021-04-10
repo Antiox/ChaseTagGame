@@ -13,12 +13,11 @@ namespace GameLibrary
         public GameObject gameObject { get; set; }
         public bool IsInSafeZone { get; set; }
         public bool IsInvulnerable { get; set; }
-        public float InvulnerabilityDuration { get; set; }
+        public float InvulnerabilityDuration { get; set; } = 3f;
 
 
         public Player() 
         {
-            InvulnerabilityDuration = 3f;
         }
         public Player(GameObject o)
         {

@@ -18,6 +18,9 @@ namespace GameLibrary
         public const string GameManager = "GameManager";
         public const string Wall = "Wall";
         public const string PowerUp = "PowerUp";
+        public const string EnemyPowerUp = "EnemyPowerUp";
         public const string Enemy = "Enemy";
+        public const string Objective = "Objective";
+        public const string MagnetTrigger = "MagnetTrigger";
     }
 }

@@ -13,7 +13,7 @@ public class CrateScript : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag(GameTags.Wall) || collision.collider.CompareTag(GameTags.PowerUp))
+        if (collision.collider.CompareTag(GameTags.Wall) || collision.collider.CompareTag(GameTags.PowerUp) || collision.collider.CompareTag(GameTags.EnemyPowerUp))
         {
             Physics.IgnoreCollision(collision.collider, GetComponent<Collider>());
         }

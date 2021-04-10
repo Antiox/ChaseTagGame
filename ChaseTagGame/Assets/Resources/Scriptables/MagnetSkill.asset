@@ -15,5 +15,5 @@ MonoBehaviour:
   name: Magnet
   artwork: {fileID: 21300000, guid: 4237afdcd5d345f4d99c03c2218be3c7, type: 3}
   description: This is a magnet
-  price: 10
+  price: 2
   type: 2

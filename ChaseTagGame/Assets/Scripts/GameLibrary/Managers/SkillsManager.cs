@@ -45,6 +45,11 @@ namespace GameLibrary
             OwnedSkills.Clear();
         }
 
+        public bool IsOwningSkill(SkillType type)
+        {
+            return OwnedSkills.Exists(s => s.type == type);
+        }
+
         private Skill CreateSkill(SkillType type)
         {
             return Resources.Load<Skill>($"Scriptables/{type}Skill");

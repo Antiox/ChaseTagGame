@@ -53,8 +53,6 @@ namespace GameLibrary
 
         public  void Update()
         {
-            Debug.Log(Player.IsInvulnerable);
-
             CurrentDay.TimeLeft -= Time.deltaTime * endofDayMultiplier;
             var e1 = new OnTimeChangedEvent(CurrentDay.InitialTime, CurrentDay.TimeLeft);
             EventManager.Instance.Dispatch(e1);
@@ -89,7 +87,7 @@ namespace GameLibrary
             EventManager.Instance.RemoveListener<OnSkillBoughtEvent>(OnSkillBought);
         }
 
-        public void ExtendDuration(double amount)
+        public void ExtendDayDuration(double amount)
         {
             CurrentDay.InitialTime += (amount * CurrentDay.InitialTime) / CurrentDay.TimeLeft;
             CurrentDay.TimeLeft += amount;
@@ -118,8 +116,8 @@ namespace GameLibrary
         public void TriggerLoseObjects()
         {
             var playerScript = Player.gameObject.GetComponent<MonoBehaviour>();
-            Player.TriggerTemporaryInvulnerability();
             playerScript.StartCoroutine(LoseObjects(CurrentDay.ObjectsCollected));
+            Player.TriggerTemporaryInvulnerability();
         }
 
         private void SpawnEnemies()

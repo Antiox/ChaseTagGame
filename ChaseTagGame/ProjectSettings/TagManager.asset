@@ -9,6 +9,8 @@ TagManager:
   - PowerUp
   - Enemy
   - Objective
+  - EnemyPowerUp
+  - MagnetTrigger
   layers:
   - Default
   - TransparentFX
