@@ -83,6 +83,7 @@ namespace GameLibrary
         {
             WaveManager.Reset();
             SkillsManager.Reset();
+            OnDestroy();
         }
 
 
@@ -145,7 +146,7 @@ namespace GameLibrary
 
         private static void OnEnemyTriggerEnter(OnEnemyTriggerEnterEvent e)
         {
-            if (e.Entity.CompareTag(GameTags.Player) && State == GameState.InGame)
+            if (e.Entity.CompareTag(GameTags.Player) && State == GameState.InGame && !WaveManager.Player.IsInvulnerable)
             {
                 if (PowerUpManager.IsEntityShielded(e.Entity))
                     PowerUpManager.RemovePowerUpFromEntity(e.Entity, PowerUpType.Shield);

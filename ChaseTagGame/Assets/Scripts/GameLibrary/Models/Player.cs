@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,11 +12,13 @@ namespace GameLibrary
     {
         public GameObject gameObject { get; set; }
         public bool IsInSafeZone { get; set; }
+        public bool IsInvulnerable { get; set; }
+        public float InvulnerabilityDuration { get; set; }
 
 
         public Player() 
         {
-
+            InvulnerabilityDuration = 3f;
         }
         public Player(GameObject o)
         {
@@ -40,6 +43,30 @@ namespace GameLibrary
         {
             if (e.Player == gameObject)
                 IsInSafeZone = true;
+        }
+
+        public void TriggerTemporaryInvulnerability()
+        {
+            gameObject.GetComponent<MonoBehaviour>().StartCoroutine(InvulnerabilityFrames());
+        }
+
+        private IEnumerator InvulnerabilityFrames()
+        {
+            var renderers = gameObject.GetComponentsInChildren<Renderer>();
+            var originalColors = new Color[renderers.Length];
+
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                originalColors[i] = renderers[i].material.color;
+                renderers[i].material.color = Color.blue;
+            }
+
+            IsInvulnerable = true;
+            yield return new WaitForSeconds(InvulnerabilityDuration);
+            IsInvulnerable = false;
+
+            for (int i = 0; i < renderers.Length; i++)
+                renderers[i].material.color = originalColors[i];
         }
     }
 }

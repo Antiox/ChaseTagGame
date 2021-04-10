@@ -28,6 +28,7 @@ namespace GameLibrary
             EventManager.Instance.AddListener<OnGameOverEvent>(OnGameOver);
             EventManager.Instance.AddListener<OnSkillBoughtEvent>(OnSkillBought);
             EventManager.Instance.AddListener<OnDayEndedEvent>(OnDayEnded);
+            EventManager.Instance.AddListener<OnGameQuittedEvent>(OnGameQuitted);
         }
 
         void Update()
@@ -50,9 +51,8 @@ namespace GameLibrary
             EventManager.Instance.RemoveListener<OnGameOverEvent>(OnGameOver);
             EventManager.Instance.RemoveListener<OnDayEndedEvent>(OnDayEnded);
             EventManager.Instance.RemoveListener<OnSkillBoughtEvent>(OnSkillBought);
+            EventManager.Instance.RemoveListener<OnGameQuittedEvent>(OnGameQuitted);
         }
-
-
 
         private void LockInputs()
         {
@@ -66,15 +66,25 @@ namespace GameLibrary
             IsMoving = HorizontalAxis != 0 || VerticalAxis != 0;
         }
 
-
-
-        private void OnGameOver(OnGameOverEvent e)
+        private void ResetInputs()
         {
             LockInputs();
             canJump = false;
             canSlide = false;
             canRun = false;
             canClimb = false;
+        }
+
+
+
+        private void OnGameOver(OnGameOverEvent e)
+        {
+            ResetInputs();
+        }
+
+        private void OnGameQuitted(OnGameQuittedEvent obj)
+        {
+            ResetInputs();
         }
 
         private void OnDayEnded(OnDayEndedEvent e)

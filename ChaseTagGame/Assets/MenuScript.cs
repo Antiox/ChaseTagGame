@@ -23,7 +23,11 @@ namespace GameLibrary
 
         public void GoToMainMenu()
         {
+            GameManager.Reset();
             SceneManager.LoadScene(0);
+
+            var e = new OnGameQuittedEvent();
+            EventManager.Instance.Dispatch(e);
         }
 
         public void ResumeGame()
