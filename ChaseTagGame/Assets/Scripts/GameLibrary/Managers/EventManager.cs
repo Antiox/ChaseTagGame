@@ -7,10 +7,27 @@ using System.Threading.Tasks;
 
 namespace GameLibrary
 {
-    public class EventManager : Singleton<EventManager>
+    public class EventManager
     {
         private readonly Dictionary<Type, Action<IGameEvent>> events = new Dictionary<Type, Action<IGameEvent>>();
         private readonly Dictionary<Delegate, Action<IGameEvent>> callbacks = new Dictionary<Delegate, Action<IGameEvent>>();
+
+
+        #region Singleton
+        private static EventManager instance;
+        public static EventManager Instance
+        {
+            get
+            {
+                instance ??= new EventManager();
+                return instance;
+            }
+        }
+        #endregion
+
+        private EventManager()
+        {
+        }
 
 
         public void AddListener<T>(Action<T> e) where T : IGameEvent

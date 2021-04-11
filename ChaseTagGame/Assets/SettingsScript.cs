@@ -15,6 +15,8 @@ namespace GameLibrary
             InitializeValues();
         }
 
+        
+
         public void MouseSensitivitySliderValueChanged(Slider slider)
         {
             var e = new OnSettingChangedEvent(SettingType.MouseSensitivity, slider.value);

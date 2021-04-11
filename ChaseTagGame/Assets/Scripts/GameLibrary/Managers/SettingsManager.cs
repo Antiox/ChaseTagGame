@@ -18,12 +18,16 @@ namespace GameLibrary
         {
             get
             {
-                if (instance == null)
-                    instance = new SettingsManager();
+                instance ??= new SettingsManager();
                 return instance;
             }
         }
         #endregion
+
+        private SettingsManager()
+        {
+
+        }
 
 
         public void Start()

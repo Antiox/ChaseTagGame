@@ -13,6 +13,7 @@ namespace GameLibrary
         DayEnded,
         Paused,
         WaitingPlayer,
-        Shopping
+        Shopping,
+        MainMenu
     }
 }

@@ -25,8 +25,7 @@ namespace GameLibrary
         {
             get
             {
-                if (instance == null)
-                    instance = new WaveManager();
+                instance ??= new WaveManager();
                 return instance;
             }
         }

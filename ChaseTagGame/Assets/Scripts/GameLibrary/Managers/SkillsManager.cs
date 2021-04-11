@@ -18,8 +18,7 @@ namespace GameLibrary
         {
             get
             {
-                if (instance == null)
-                    instance = new SkillsManager();
+                instance ??= new SkillsManager();
                 return instance;
             }
         }

@@ -7,10 +7,26 @@ using UnityEngine;
 
 namespace GameLibrary
 {
-    public class PowerUpManager : Singleton<PowerUpManager>
+    public class PowerUpManager
     {
         public Dictionary<GameObject, List<IPowerUp>> Entities { get; set; } = new Dictionary<GameObject, List<IPowerUp>>();
 
+
+        #region Singleton
+        private static PowerUpManager instance;
+        public static PowerUpManager Instance
+        {
+            get
+            {
+                instance ??= new PowerUpManager();
+                return instance;
+            }
+        }
+        #endregion
+
+        private PowerUpManager()
+        {
+        }
 
 
         public void Update()

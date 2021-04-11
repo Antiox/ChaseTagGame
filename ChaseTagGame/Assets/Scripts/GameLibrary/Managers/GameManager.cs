@@ -28,18 +28,28 @@ namespace GameLibrary
         private static GameState previousState;
 
 
+
         public static void Start()
         {
-            WaveManager.Start();
+            State = SceneManager.GetActiveScene().buildIndex == 0 ? GameState.MainMenu : GameState.WaitingPlayer;
+
+            AddListeners();
             SettingsManager.Start();
-            SkillsManager.Start();
 
 
-            MainGameObject = GameObject.Find("GameManager");
-            MainGameScript = MainGameObject.GetComponent<GameScript>();
+            if (State != GameState.MainMenu)
+            {
+                WaveManager.Start();
+                SkillsManager.Start();
 
-            HudManager = MainGameObject.GetComponent<HudManagerScript>();
+                MainGameObject = GameObject.Find("GameManager");
+                MainGameScript = MainGameObject.GetComponent<GameScript>();
+                HudManager = MainGameObject.GetComponent<HudManagerScript>();
+            }
+        }
 
+        public static void AddListeners()
+        {
             EventManager.AddListener<OnPowerUpTriggerEnterEvent>(OnPowerUpTriggerEnter);
             EventManager.AddListener<OnEnemyTriggerEnterEvent>(OnEnemyTriggerEnter);
             EventManager.AddListener<OnPointsAddedEvent>(OnPointsAdded);
@@ -48,10 +58,7 @@ namespace GameLibrary
             EventManager.AddListener<OnPlayerExitSafeZoneEvent>(OnPlayerExitSafeZone);
             EventManager.AddListener<OnObjectiveItemTriggerEnterEvent>(OnObjectiveItemTriggerEnter);
             EventManager.AddListener<OnInteractiveElementPressedEvent>(OnInteractiveElementPressed);
-
-            State = GameState.WaitingPlayer;
         }
-
 
         public static void Update()
         {
@@ -61,8 +68,11 @@ namespace GameLibrary
                 WaveManager.Update();
             }
 
-            HandlePauseGame();
-            HudManager.DisplayDayInfo(WaveManager.CurrentDay);
+            if(State != GameState.MainMenu)
+            {
+                HandlePauseGame();
+                HudManager.DisplayDayInfo(WaveManager.CurrentDay);
+            }
         }
 
         public static void OnDestroy()
