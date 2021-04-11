@@ -86,10 +86,14 @@ namespace GameLibrary
             return path;
         }
 
-
         public static Vector3 GetNavMeshCenter()
         {
             return NavMesh.CalculateTriangulation().vertices.Average();
+        }
+
+        public static IEnumerable<T> GetEnumValues<T>()
+        {
+            return Enum.GetValues(typeof(T)).Cast<T>();
         }
     }
 }

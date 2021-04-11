@@ -8,18 +8,13 @@ namespace GameLibrary
 {
     public class OnSettingChangedEvent : IGameEvent
     {
-        public Settings Setting { get; set; }
-        public object Value { get; set; }
+        public SettingType Setting { get; set; }
+        public dynamic Value { get; set; }
 
-        public OnSettingChangedEvent(Settings setting, object value)
+        public OnSettingChangedEvent(SettingType setting, dynamic value)
         {
             Setting = setting;
             Value = value;
         }
-    }
-
-    public enum Settings
-    {
-        MouseSensitivity
     }
 }

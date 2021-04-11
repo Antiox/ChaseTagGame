@@ -16,12 +16,14 @@ namespace GameLibrary
         private CinemachineFreeLook freeLookCamera;
 
 
+
         void Start()
         {
             freeLookCamera = GetComponentInChildren<CinemachineFreeLook>();
             EventManager.Instance.AddListener<OnGameOverEvent>(OnGameOver);
             EventManager.Instance.AddListener<OnSettingChangedEvent>(OnMouseSensitivityChanged);
             EventManager.Instance.AddListener<OnDayEndedEvent>(OnDayEnded);
+            ChangeCameraSensitivity(SettingsManager.Instance.GetSettingValue(SettingType.MouseSensitivity));
         }
 
         void Update()
@@ -48,8 +50,6 @@ namespace GameLibrary
             freeLookCamera.m_XAxis.m_MaxSpeed = 0;
         }
 
-
-
         private void OnGameOver(OnGameOverEvent e)
         {
             FreezeCamera();
@@ -60,13 +60,18 @@ namespace GameLibrary
             FreezeCamera();
         }
 
+        private void ChangeCameraSensitivity(float value)
+        {
+            freeLookCamera.m_XAxis.m_MaxSpeed = 60f * value;
+            freeLookCamera.m_YAxis.m_MaxSpeed = 0.42f * value;
+        }
+
+
+
         private void OnMouseSensitivityChanged(OnSettingChangedEvent e)
         {
-            if(e.Setting == Settings.MouseSensitivity)
-            {
-                freeLookCamera.m_XAxis.m_MaxSpeed = 60f * (float)e.Value;
-                freeLookCamera.m_YAxis.m_MaxSpeed = 0.42f * (float)e.Value;
-            }
+            if(e.Setting == SettingType.MouseSensitivity)
+                ChangeCameraSensitivity(e.Value);
         }
     }
 }

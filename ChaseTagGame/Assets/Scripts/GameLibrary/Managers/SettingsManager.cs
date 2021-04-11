@@ -7,10 +7,29 @@ using UnityEngine;
 
 namespace GameLibrary
 {
-    public class SettingsManager : Singleton<SettingsManager>
+    public class SettingsManager
     {
+        private List<ISetting> settings;
+
+
+        #region Singleton
+        private static SettingsManager instance;
+        public static SettingsManager Instance
+        {
+            get
+            {
+                if (instance == null)
+                    instance = new SettingsManager();
+                return instance;
+            }
+        }
+        #endregion
+
+
         public void Start()
         {
+            InitializeSettings();
+            LoadSettings();
             EventManager.Instance.AddListener<OnSettingChangedEvent>(OnSettingChanged);
         }
 
@@ -19,17 +38,30 @@ namespace GameLibrary
             EventManager.Instance.RemoveListener<OnSettingChangedEvent>(OnSettingChanged);
         }
 
-        private static void OnSettingChanged(OnSettingChangedEvent e)
+        public dynamic GetSettingValue(SettingType type)
         {
-            switch (e.Setting)
-            {
-                case Settings.MouseSensitivity: SaveMouseSensitivity(e); break;
-            }
+            return settings.Find(s => s.Type == type).Value;
         }
 
-        private static void SaveMouseSensitivity(OnSettingChangedEvent e)
+
+        private void LoadSettings()
         {
-            PlayerPrefs.SetFloat(e.Setting.ToString("g"), (float)e.Value);
+            foreach (var s in settings)
+                s.Load();
+        }
+
+        private void InitializeSettings()
+        {
+            settings = new List<ISetting>
+            {
+                new Setting(SettingType.MouseSensitivity),
+            };
+        }
+
+
+        private void OnSettingChanged(OnSettingChangedEvent e)
+        {
+            settings.Find(s => s.Type == e.Setting).Save(e.Value);
         }
     }
 }
