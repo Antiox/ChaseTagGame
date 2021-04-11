@@ -24,6 +24,9 @@ public class CrateScript : MonoBehaviour
             var p = Instantiate(powerUpGameObject, transform.position, Quaternion.identity);
             p.GetComponent<PowerUpScript>().powerUp = powerUp;
 
+            if (collision.collider.CompareTag(GameTags.Enemy))
+                Destroy(collision.collider.gameObject);
+
             Destroy(gameObject);
             Destroy(explosionInstance, 3);
         }
