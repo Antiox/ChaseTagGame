@@ -91,6 +91,12 @@ namespace GameLibrary
             return NavMesh.CalculateTriangulation().vertices.Average();
         }
 
+        public static Vector3 GetDirectionFromAngle(float angle)
+        {
+            var angleInRad = angle * Mathf.Deg2Rad;
+            return new Vector3(Mathf.Sin(angleInRad), 0, Mathf.Cos(angleInRad));
+        }
+
         public static IEnumerable<T> GetEnumValues<T>()
         {
             return Enum.GetValues(typeof(T)).Cast<T>();

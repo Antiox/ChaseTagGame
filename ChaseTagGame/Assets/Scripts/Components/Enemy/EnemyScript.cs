@@ -15,22 +15,12 @@ namespace GameLibrary
         private List<Vector3> path;
 
 
-
-
-
-
         void Start()
         {
             path = Utility.GetRandomNavMeshCircularPath();
             transform.position = path[0];
             navMeshAgent = GetComponent<NavMeshAgent>();
-            StartCoroutine(FollowPath());
-        }
-
-        private void OnTriggerEnter(Collider other)
-        {
-            var e = new OnEnemyTriggerEnterEvent(gameObject, other.gameObject);
-            EventManager.Instance.Dispatch(e);
+            //StartCoroutine(FollowPath());
         }
 
         private IEnumerator FollowPath()
@@ -79,6 +69,17 @@ namespace GameLibrary
             }
 
             return tMin;
+        }
+
+
+        public void OnProximityTriggerEnter(Collider other)
+        {
+            //var e = new OnEnemyTriggerEnterEvent(gameObject, other.gameObject);
+            //EventManager.Instance.Dispatch(e);
+        }
+
+        public void OnDetectionAreaTriggerEnter(Collider other)
+        {
         }
     }
 }

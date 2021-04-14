@@ -124,7 +124,8 @@ namespace GameLibrary
             for (int i = 0; i < CurrentDay.Number; i++)
             {
                 var enemy = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Enemy"), Utility.GetRandomNavMeshPosition(), Quaternion.identity);
-                Enemies.Add(new Enemy(enemy));
+                var range = UnityEngine.Random.Range(2f, 60f);
+                Enemies.Add(new Enemy(enemy, 300f, range));
             }
         }
 
