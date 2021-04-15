@@ -8,76 +8,51 @@ namespace GameLibrary
 {
     public class EnemyDetectionAreaScript : MonoBehaviour
     {
-        [SerializeField, Range(0f, 360f)] private float angle;
-        public float Angle
-        {
-            get { return angle; }
-            set { angle = value; }
-        }
+        public float Range { get; set; }
+        public float Angle { get; set; }
 
-        [SerializeField, Range(0f, 10f)] private float range;
-        public float Range
-        {
-            get { return range; }
-            set { range = value; }
-        }
+        [SerializeField] private UnityEvent<Collider> playerDetectedCallback;
+        private bool playerEnteredArea;
 
-        [SerializeField] private UnityEvent<Collider> onPlayerInDetectionArea;
-
-        [SerializeField] private LayerMask targetMask;
-        [SerializeField] private LayerMask obstacleMask;
-
+        private new Renderer renderer;
+        private MaterialPropertyBlock propertyBlock;
 
         private void Start()
         {
-            StartCoroutine(CheckDetectionArea());
+            renderer = GetComponent<Renderer>();
+            propertyBlock = new MaterialPropertyBlock();
         }
 
 
-        private void OnDrawGizmos()
+        private void Update()
         {
-            var viewAngleA = Utility.GetDirectionFromAngle(-Angle / 2);
-            var viewAngleB = Utility.GetDirectionFromAngle(Angle / 2);
+            renderer.GetPropertyBlock(propertyBlock);
+            propertyBlock.SetFloat("_Cutoff", Angle);
+            renderer.SetPropertyBlock(propertyBlock);
 
-            Handles.color = Color.red;
-            Handles.DrawWireArc(transform.position, Vector3.up, viewAngleA, Angle, Range);
-            Handles.DrawLine(transform.position, transform.position + viewAngleA * Range);
-            Handles.DrawLine(transform.position, transform.position + viewAngleB * Range);
-
-
-            Gizmos.DrawWireSphere(transform.position, Range);
+            transform.localScale = new Vector3(Range, Range, 4);
         }
 
-        private IEnumerator CheckDetectionArea()
+
+        private void OnTriggerStay(Collider other)
         {
-            while (true)
+            if (other.CompareTag(GameTags.Player))
             {
-                var colliders = Physics.OverlapSphere(transform.position, Range, targetMask);
-
-                foreach (var c in colliders)
+                var direction = (other.transform.position - transform.position).normalized;
+                var angle = Vector3.Angle(transform.parent.forward, direction);
+                if (angle < Angle / 2f && !playerEnteredArea)
                 {
-                    var targetPosition = c.transform.position + Vector3.up;
-                    var directionToTarget = (targetPosition - transform.position).normalized;
-
-                    if (Vector3.Angle(transform.forward, directionToTarget) < Angle / 2f)
-                    {
-                        var distanceToTarget = Vector3.Distance(targetPosition, transform.position);
-
-                        if (Physics.Raycast(transform.position, directionToTarget, distanceToTarget, obstacleMask))
-                            continue;
-
-                        onPlayerInDetectionArea.Invoke(c);
-                    }
+                    playerEnteredArea = true;
+                    playerDetectedCallback.Invoke(other);
                 }
-
-                yield return new WaitForFixedUpdate();
+                else if (angle >= Angle / 2f)
+                    playerEnteredArea = false;
             }
-
         }
 
-        private void DrawDetectionArea()
+        private void OnTriggerExit(Collider other)
         {
-
+            playerEnteredArea = false;
         }
     }
 }

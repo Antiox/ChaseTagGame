@@ -84,5 +84,6 @@ namespace GameLibrary
         Magnet,
         Slide,
         Run,
+        DetectionArea,
     }
 }

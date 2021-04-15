@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Linq;
 using UnityEditor;
+using System;
 
 namespace GameLibrary
 {
@@ -14,13 +15,17 @@ namespace GameLibrary
         private NavMeshAgent navMeshAgent;
         private List<Vector3> path;
 
+        [SerializeField] private GameObject detectionArea;
 
         void Start()
         {
             path = Utility.GetRandomNavMeshCircularPath();
             transform.position = path[0];
             navMeshAgent = GetComponent<NavMeshAgent>();
-            //StartCoroutine(FollowPath());
+
+            detectionArea.SetActive(SkillsManager.Instance.IsOwningSkill(SkillType.DetectionArea));
+
+            StartCoroutine(FollowPath());
         }
 
         private IEnumerator FollowPath()
@@ -74,12 +79,13 @@ namespace GameLibrary
 
         public void OnProximityTriggerEnter(Collider other)
         {
-            //var e = new OnEnemyTriggerEnterEvent(gameObject, other.gameObject);
-            //EventManager.Instance.Dispatch(e);
+            var e = new OnEnemyTriggerEnterEvent(gameObject, other.gameObject);
+            EventManager.Instance.Dispatch(e);
         }
 
         public void OnDetectionAreaTriggerEnter(Collider other)
         {
+            Debug.Log("AREA");
         }
     }
 }
