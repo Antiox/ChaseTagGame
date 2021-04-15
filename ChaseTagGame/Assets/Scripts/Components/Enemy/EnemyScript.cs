@@ -23,7 +23,7 @@ namespace GameLibrary
             transform.position = path[0];
             navMeshAgent = GetComponent<NavMeshAgent>();
 
-            detectionArea.SetActive(SkillsManager.Instance.IsOwningSkill(SkillType.DetectionArea));
+            detectionArea.SetActive(GameManager.IsOwningSkill(SkillType.DetectionArea));
 
             StartCoroutine(FollowPath());
         }
@@ -39,7 +39,7 @@ namespace GameLibrary
                     {
                         do
                         {
-                            var closestEntity = GetClosestTarget();
+                            var closestEntity = GetClosestEntity();
                             var distanceToNextPathPoint = (transform.position - path[i]).sqrMagnitude;
                             var distanceToClosestEntity = (transform.position - closestEntity).sqrMagnitude;
                             var minDistance = Mathf.Min(distanceToNextPathPoint, distanceToClosestEntity);
@@ -54,7 +54,7 @@ namespace GameLibrary
             }
         }
 
-        private Vector3 GetClosestTarget()
+        private Vector3 GetClosestEntity()
         {
             var players = GameObject.FindGameObjectsWithTag(GameTags.Player);
             var powerUps = GameObject.FindGameObjectsWithTag(GameTags.EnemyPowerUp);

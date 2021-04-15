@@ -11,6 +11,7 @@ TagManager:
   - Objective
   - EnemyPowerUp
   - MagnetTrigger
+  - WallHackCamera
   layers:
   - Default
   - TransparentFX

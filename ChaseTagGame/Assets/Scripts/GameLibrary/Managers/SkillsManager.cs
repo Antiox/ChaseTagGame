@@ -85,5 +85,6 @@ namespace GameLibrary
         Slide,
         Run,
         DetectionArea,
+        WallHack,
     }
 }
