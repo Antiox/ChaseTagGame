@@ -14,6 +14,8 @@ namespace GameLibrary
         public bool IsInSafeZone { get; set; }
         public bool IsInvulnerable { get; set; }
         public float InvulnerabilityDuration { get; set; } = 3f;
+        public Vector3 Direction  { get { return gameObject.GetComponent<PlayerMovement>().PlayerDirection; } }
+
 
 
         public Player() 
@@ -48,6 +50,7 @@ namespace GameLibrary
         {
             gameObject.GetComponent<MonoBehaviour>().StartCoroutine(InvulnerabilityFrames());
         }
+
 
         private IEnumerator InvulnerabilityFrames()
         {

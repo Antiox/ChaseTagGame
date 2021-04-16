@@ -10,10 +10,9 @@ namespace GameLibrary
 {
     public class WaveManager
     {
-
         public DayInfo CurrentDay { get; private set; }
         public Player Player { get; private set; }
-        public List<Enemy> Enemies { get; private set; }
+        public List<IEnemy> Enemies { get; private set; }
         public int Currency { get; set; }
 
         private float endofDayMultiplier;
@@ -36,7 +35,7 @@ namespace GameLibrary
         {
             CurrentDay = new DayInfo();
             Player = new Player();
-            Enemies = new List<Enemy>();
+            Enemies = new List<IEnemy>();
         }
 
         public void Start()
@@ -119,14 +118,22 @@ namespace GameLibrary
             Player.TriggerTemporaryInvulnerability();
         }
 
+        public IEnemy GetEnemyFromGameObject(GameObject o)
+        {
+            return Enemies.Find(e => e.GameObject == o);
+        }
+
+
+
         private void SpawnEnemies()
         {
             for (int i = 0; i < CurrentDay.Number; i++)
             {
-                var enemy = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Enemy"), Utility.GetRandomNavMeshPosition(), Quaternion.identity);
+                var enemyGameObject = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Enemy"), Utility.GetRandomNavMeshPosition(), Quaternion.identity);
                 var range = UnityEngine.Random.Range(10f, 40f);
                 var angle = UnityEngine.Random.Range(30f, 140f);
-                Enemies.Add(new Enemy(enemy, angle, range));
+                var enemy = new Enemy(enemyGameObject, angle, range);
+                Enemies.Add(enemy);
             }
         }
 
@@ -158,6 +165,7 @@ namespace GameLibrary
                 yield return new WaitForSeconds(0.4f / amount);
             }
         }
+
 
 
         private void OnSkillBought(OnSkillBoughtEvent e)

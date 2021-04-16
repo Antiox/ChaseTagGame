@@ -24,7 +24,7 @@ namespace GameLibrary
         private readonly float slopeForce = 50f;
         private bool canWalkOnSlope;
         private float CurrentRunningSpeed { get { return playerInputs.IsRunning ? RunningMultiplier : 1f; } }
-        private Vector3 playerMovement { get { return playerDirection * MovementSpeed; } }
+        private Vector3 playerMovement { get { return PlayerDirection * MovementSpeed; } }
 
 
         [Header("Jump")]
@@ -60,7 +60,7 @@ namespace GameLibrary
         private Rigidbody rigidBody;
         private Animator characterAnimator;
         private CapsuleCollider playerCollider;
-        private Vector3 playerDirection;
+        public Vector3 PlayerDirection { get; private set; }
         private Vector3 lastPlayerDirection;
 
         #endregion
@@ -95,7 +95,7 @@ namespace GameLibrary
                 ProcessEndOfClimb();
 
 
-            lastPlayerDirection = playerDirection.magnitude > 0 ? playerDirection : lastPlayerDirection;
+            lastPlayerDirection = PlayerDirection.magnitude > 0 ? PlayerDirection : lastPlayerDirection;
             climbEndTimer += climbEndInProgress ? Time.deltaTime : 0f;
             climbingTimer += isClimbing ? (Mathf.Sign(rigidBody.velocity.y) * rigidBody.velocity.magnitude + 1)  * Time.deltaTime : 0f;
             currentAirTime = isGrounded ? 0 : (currentAirTime + Time.deltaTime);
@@ -152,9 +152,9 @@ namespace GameLibrary
             cameraFrontDirection.y = 0;
             cameraFrontDirection = cameraFrontDirection.normalized;
             var cameraSideDirection = Quaternion.AngleAxis(90, Vector3.up) * cameraFrontDirection;
-            playerDirection = (cameraFrontDirection * playerInputs.VerticalAxis + cameraSideDirection * playerInputs.HorizontalAxis).normalized;
+            PlayerDirection = (cameraFrontDirection * playerInputs.VerticalAxis + cameraSideDirection * playerInputs.HorizontalAxis).normalized;
 
-            if (playerDirection.magnitude > 0 && !isClimbing && !climbEndInProgress)
+            if (PlayerDirection.magnitude > 0 && !isClimbing && !climbEndInProgress)
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(cameraFrontDirection), 25f * Time.deltaTime);
             else if(isClimbing)
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(-frontWallNormal), 25f * Time.deltaTime);
@@ -219,7 +219,7 @@ namespace GameLibrary
         }
         private void AddPoints()
         {
-            EventManager.Instance.Dispatch(new OnPointsAddedEvent(playerDirection.magnitude * Time.deltaTime));
+            EventManager.Instance.Dispatch(new OnPointsAddedEvent(PlayerDirection.magnitude * Time.deltaTime));
         }
     }
 }

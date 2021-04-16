@@ -137,7 +137,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34815a1a5d3b6c04b880bda71e8772b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionArea: {fileID: 8525364785796223036}
 --- !u!1 &640092051347047987
 GameObject:
   m_ObjectHideFlags: 0
@@ -563,11 +562,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 981488fc6840a5947a92559ec78e7318, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerDetectedCallback:
+  playerEnterAreaCallback:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 640092050213692669}
-        m_TargetAssemblyTypeName: GameLibrary.EnemyScript, Assembly-CSharp
+        m_TargetAssemblyTypeName: GameLibrary.EnemyControllerScript, Assembly-CSharp
         m_MethodName: OnDetectionAreaTriggerEnter
         m_Mode: 0
         m_Arguments:
@@ -578,3 +577,36 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  playerStayInAreaCallback:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 640092050213692669}
+        m_TargetAssemblyTypeName: GameLibrary.EnemyControllerScript, Assembly-CSharp
+        m_MethodName: OnDetectionAreaTriggerStay
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  playerLeftAreaCallback:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 640092050213692669}
+        m_TargetAssemblyTypeName: GameLibrary.EnemyControllerScript, Assembly-CSharp
+        m_MethodName: OnDetectionAreaTriggerExit
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 567
