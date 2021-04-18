@@ -86,6 +86,25 @@ namespace GameLibrary
             return path;
         }
 
+        public static List<Vector3> GetRandomNavMeshCircularPath(Vector3 center, float radius, float noise)
+        {
+            var path = new List<Vector3>();
+            var points = UnityEngine.Random.Range(5, 7);
+            var direction = UnityEngine.Random.value > 0.5f ? -1 : 1;
+
+            for (int i = 0; i < points; i++)
+            {
+                var angle = Mathf.Deg2Rad * (360 / points) * i * direction;
+                var pointOnCircle = center + new Vector3(radius * Mathf.Sin(angle), 0, radius * Mathf.Cos(angle));
+                var randomWayPoint = pointOnCircle + UnityEngine.Random.insideUnitSphere * noise;
+                NavMesh.SamplePosition(randomWayPoint, out var hit, noise * 2, 1);
+                path.Add(hit.position);
+            }
+
+            return path;
+        }
+
+
         public static Vector3 GetNavMeshCenter()
         {
             return NavMesh.CalculateTriangulation().vertices.Average();

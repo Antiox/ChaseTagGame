@@ -20,14 +20,15 @@ namespace GameLibrary
         private new Renderer renderer;
         private MaterialPropertyBlock propertyBlock;
 
-        private void Start()
+
+
+        void Start()
         {
             renderer = GetComponent<Renderer>();
             propertyBlock = new MaterialPropertyBlock();
         }
 
-
-        private void Update()
+        void Update()
         {
             renderer.GetPropertyBlock(propertyBlock);
             propertyBlock.SetFloat("_Cutoff", Angle);
@@ -35,8 +36,7 @@ namespace GameLibrary
             transform.localScale = new Vector3(Range, Range, 4);
         }
 
-
-        private void OnTriggerStay(Collider other)
+        void OnTriggerStay(Collider other)
         {
             if (other.CompareTag(GameTags.Player))
             {
@@ -50,29 +50,49 @@ namespace GameLibrary
                 var distance = Vector3.Distance(otherPosition, transform.position);
                 var playerIsVisible = !Physics.Raycast(transform.position, direction, distance, targetMask, QueryTriggerInteraction.Ignore);
 
-                Debug.DrawRay(transform.position, direction * distance, Color.red);
 
-                if (angle < Angle / 2f && !playerEnteredArea && playerIsVisible)
+                if ((distance < 3f || (angle < Angle / 2f && playerIsVisible)) && !playerEnteredArea)
                 {
                     playerEnteredArea = true;
-                    playerEnterAreaCallback.Invoke(other);
+                    InvokePlayerEnteredFovEvent(other);
                 }
-                else if(angle < Angle / 2f && playerIsVisible)
-                    playerStayInAreaCallback.Invoke(other);
+                else if ((angle < Angle / 2f && playerIsVisible) || distance < 3f)
+                    InvokePlayerStayedFovEvent(other);
                 else if (angle >= Angle / 2f || !playerIsVisible)
                 {
                     playerEnteredArea = false;
-                    playerLeftAreaCallback.Invoke(other);
+                    InvokePlayerLeftFovEvent(other);
                 }
             }
         }
 
-        private void OnTriggerExit(Collider other)
+        void OnTriggerExit(Collider other)
         {
             if(playerEnteredArea)
-                playerLeftAreaCallback.Invoke(other);
+                InvokePlayerLeftFovEvent(other);
 
             playerEnteredArea = false;
+        }
+
+
+
+
+        private void InvokePlayerEnteredFovEvent(Collider player)
+        {
+            var e = new OnPlayerEnteredEnemyFovEvent(player, transform.parent.gameObject);
+            EventManager.Instance.Dispatch(e);
+        }
+
+        private void InvokePlayerStayedFovEvent(Collider player)
+        {
+            var e = new OnPlayerStayedInEnemyFovEvent(player, transform.parent.gameObject);
+            EventManager.Instance.Dispatch(e);
+        }
+
+        private void InvokePlayerLeftFovEvent(Collider player)
+        {
+            var e = new OnPlayerLeftEnemyFovEvent(player, transform.parent.gameObject);
+            EventManager.Instance.Dispatch(e);
         }
     }
 }

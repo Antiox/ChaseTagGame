@@ -23,5 +23,6 @@ namespace GameLibrary
         public const string Objective = "Objective";
         public const string MagnetTrigger = "MagnetTrigger";
         public const string WallHackCamera = "WallHackCamera";
+        public const string Gem = "Gem";
     }
 }

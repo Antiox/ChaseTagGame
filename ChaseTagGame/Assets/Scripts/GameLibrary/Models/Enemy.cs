@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace GameLibrary
 {
@@ -59,14 +60,16 @@ namespace GameLibrary
             DetectionRange = detectionRange;
         }
 
-        public Vector3 GetStartingPositon()
-        {
-            return Path[0];
-        }
 
         public void Start()
         {
             Path = Utility.GetRandomNavMeshPath();
+        }
+
+
+        public Vector3 GetStartingPositon()
+        {
+            return Path[0];
         }
     }
 }

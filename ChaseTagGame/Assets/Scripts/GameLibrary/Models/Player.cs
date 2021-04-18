@@ -14,8 +14,9 @@ namespace GameLibrary
         public bool IsInSafeZone { get; set; }
         public bool IsInvulnerable { get; set; }
         public float InvulnerabilityDuration { get; set; } = 3f;
-        public Vector3 Direction  { get { return gameObject.GetComponent<PlayerMovement>().PlayerDirection; } }
+        public Vector3 Direction  { get { return movementScript.PlayerDirection; } }
 
+        private readonly PlayerMovement movementScript;
 
 
         public Player() 
@@ -26,6 +27,7 @@ namespace GameLibrary
             gameObject = o;
             EventManager.Instance.AddListener<OnPlayerEnterSafeZoneEvent>(OnPlayerEnterSafeZone);
             EventManager.Instance.AddListener<OnPlayerExitSafeZoneEvent>(OnPlayerExitSafeZone);
+            movementScript = gameObject.GetComponent<PlayerMovement>();
         }
 
         ~Player()

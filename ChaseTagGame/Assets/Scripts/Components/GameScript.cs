@@ -17,7 +17,7 @@ namespace GameLibrary
         {
             Time.timeScale = 1f;
             GameManager.Start();
-            StartCoroutine(SpawnPowerUp(5f));
+            //StartCoroutine(SpawnPowerUp(5f));
         }
 
         void Update()
@@ -41,6 +41,7 @@ namespace GameLibrary
         {
             SceneManager.LoadScene(0);
         }
+
 
 
         private static IEnumerator SpawnPowerUp(float delay)

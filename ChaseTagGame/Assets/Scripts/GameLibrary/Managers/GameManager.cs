@@ -58,6 +58,7 @@ namespace GameLibrary
             EventManager.AddListener<OnPlayerExitSafeZoneEvent>(OnPlayerExitSafeZone);
             EventManager.AddListener<OnObjectiveItemTriggerEnterEvent>(OnObjectiveItemTriggerEnter);
             EventManager.AddListener<OnInteractiveElementPressedEvent>(OnInteractiveElementPressed);
+            EventManager.AddListener<OnGemTriggerEnterEvent>(OnGemTriggerEnter);
         }
 
         public static void Update()
@@ -87,6 +88,7 @@ namespace GameLibrary
             EventManager.RemoveListener<OnPlayerExitSafeZoneEvent>(OnPlayerExitSafeZone);
             EventManager.RemoveListener<OnInteractiveElementPressedEvent>(OnInteractiveElementPressed);
             EventManager.RemoveListener<OnObjectiveItemTriggerEnterEvent>(OnObjectiveItemTriggerEnter);
+            EventManager.RemoveListener<OnGemTriggerEnterEvent>(OnGemTriggerEnter);
         }
 
         public static void Reset()
@@ -100,7 +102,7 @@ namespace GameLibrary
         private static void GameOver()
         {
             State = GameState.GameOver;
-            HudManager.DisplayGameOver();
+            HudManager.DisplayGameOver(WaveManager.CurrentDay);
             
             var e = new OnGameOverEvent(WaveManager.CurrentDay);
             EventManager.Instance.Dispatch(e);
@@ -206,6 +208,12 @@ namespace GameLibrary
         {
             WaveManager.IncreaseCollectedObjectives();
             GameObject.Destroy(e.Objective.gameObject);
+        }
+
+        private static void OnGemTriggerEnter(OnGemTriggerEnterEvent e)
+        {
+            WaveManager.IncreaseCollectedGems();
+            GameObject.Destroy(e.Gem.gameObject);
         }
 
         private static void OnInteractiveElementPressed(OnInteractiveElementPressedEvent e)

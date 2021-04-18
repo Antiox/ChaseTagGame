@@ -45,6 +45,7 @@ namespace GameLibrary
             Enemies.Clear();
             SpawnEnemies();
             SpawnObjectives();
+            SpawnGems();
 
             EventManager.Instance.AddListener<OnSkillBoughtEvent>(OnSkillBought);
         }
@@ -58,7 +59,7 @@ namespace GameLibrary
 
             if (CurrentDay.TimeLeft <= 0)
             {
-                Currency += CurrentDay.ObjectsCollected;
+                Currency += CurrentDay.GemsCollected;
                 var e2 = new OnDayEndedEvent();
                 EventManager.Instance.Dispatch(e2);
             }
@@ -106,6 +107,11 @@ namespace GameLibrary
             CurrentDay.ObjectsCollected++;
         }
 
+        public void IncreaseCollectedGems()
+        {
+            CurrentDay.GemsCollected++;
+        }
+
         public void AccelerateEndOfDay()
         {
             endofDayMultiplier = 20f;
@@ -130,8 +136,8 @@ namespace GameLibrary
             for (int i = 0; i < CurrentDay.Number; i++)
             {
                 var enemyGameObject = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Enemy"), Utility.GetRandomNavMeshPosition(), Quaternion.identity);
-                var range = UnityEngine.Random.Range(10f, 40f);
-                var angle = UnityEngine.Random.Range(30f, 140f);
+                var range = UnityEngine.Random.Range(15f, 40f);
+                var angle = UnityEngine.Random.Range(40f, 140f);
                 var enemy = new Enemy(enemyGameObject, angle, range);
                 Enemies.Add(enemy);
             }
@@ -143,6 +149,15 @@ namespace GameLibrary
             {
                 var spawnPosition = Utility.GetRandomNavMeshPosition() + Vector3.up;
                 GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Key"), spawnPosition, Quaternion.identity);
+            }
+        }
+
+        private void SpawnGems()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                var spawnPosition = Utility.GetRandomNavMeshPosition() + Vector3.up;
+                GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Gem"), spawnPosition, Quaternion.identity);
             }
         }
 
@@ -162,7 +177,7 @@ namespace GameLibrary
                 rigidbody.AddForce(spreadX + spreadZ + upDirection, ForceMode.VelocityChange);
                 rigidbody.AddTorque(Utility.GetRandomTorque(180f), ForceMode.VelocityChange);
                 CurrentDay.ObjectsCollected--;
-                yield return new WaitForSeconds(0.4f / amount);
+                yield return new WaitForSeconds(0.01f);
             }
         }
 

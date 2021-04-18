@@ -14,6 +14,11 @@ namespace GameLibrary
     {
         private NavMeshAgent navMeshAgent;
         private IEnemy self;
+        private float searchingCooldown;
+        private readonly float chasingSpeed = 7f;
+        private readonly float scoutingSpeed = 5f;
+        private readonly float searchingSpeed = 11f;
+        private List<Vector3> searchingPath;
 
 
         void Start()
@@ -24,47 +29,101 @@ namespace GameLibrary
             navMeshAgent = GetComponent<NavMeshAgent>();
 
             var detectionArea = transform.Find("DetectionArea").GetComponent<Renderer>();
-            detectionArea.enabled = true; //GameManager.IsOwningSkill(SkillType.DetectionArea);
+            detectionArea.enabled = GameManager.IsOwningSkill(SkillType.DetectionArea);
+
+            EventManager.Instance.AddListener<OnPlayerEnteredEnemyFovEvent>(OnDetectionAreaTriggerEnter);
+            EventManager.Instance.AddListener<OnPlayerStayedInEnemyFovEvent>(OnDetectionAreaTriggerStay);
+            EventManager.Instance.AddListener<OnPlayerLeftEnemyFovEvent>(OnDetectionAreaTriggerExit);
 
             StartCoroutine(Scout());
         }
 
-        private void OnDrawGizmos()
+        private void OnDestroy()
         {
-            Gizmos.DrawSphere(self.LastPlayerKnownPosition, 0.5f);
-            Debug.DrawLine(self.LastPlayerKnownPosition, self.LastPlayerKnownDirection * 2f, Color.green, Time.deltaTime);
-
-            if (self?.Path == null)
-                return;
-
-            for (int i = 0; i < self.Path.Count; i++)
-            {
-                var p = self.Path[i];
-                Gizmos.color = Color.red;
-                Gizmos.DrawSphere(p, 0.5f);
-                Handles.Label(p, i.ToString());
-            }
+            EventManager.Instance.RemoveListener<OnPlayerEnteredEnemyFovEvent>(OnDetectionAreaTriggerEnter);
+            EventManager.Instance.RemoveListener<OnPlayerStayedInEnemyFovEvent>(OnDetectionAreaTriggerStay);
+            EventManager.Instance.RemoveListener<OnPlayerLeftEnemyFovEvent>(OnDetectionAreaTriggerExit);
         }
 
 
         private IEnumerator Scout()
         {
-            while (true)
+            var propertyBlock = new MaterialPropertyBlock();
+            GetComponent<Renderer>().GetPropertyBlock(propertyBlock);
+            propertyBlock.SetColor("_BaseColor", Color.blue);
+            GetComponent<Renderer>().SetPropertyBlock(propertyBlock);
+
+            navMeshAgent.speed = scoutingSpeed;
+
+            while (self.Behavior == EnemyBehavior.Scouting)
             {
-                if (GameManager.State == GameState.InGame)
+                for (int i = 0; i < self.Path.Count; i++)
                 {
-                    switch (self.Behavior)
+                    while (Vector3.Distance(transform.position, self.Path[i]) > 1.1f)
                     {
-                        case EnemyBehavior.Scouting: ProcessScouting(); break;
-                        case EnemyBehavior.Searching: ProcessSearching(); break;
-                        case EnemyBehavior.Chasing: ProcessChasing(); break;
-                        default: break;
+                        navMeshAgent.SetDestination(self.Path[i]);
+                        yield return null;
                     }
                 }
+            }
+        }
 
+        private IEnumerator Chase()
+        {
+            var propertyBlock = new MaterialPropertyBlock();
+            GetComponent<Renderer>().GetPropertyBlock(propertyBlock);
+            propertyBlock.SetColor("_BaseColor", Color.red);
+            GetComponent<Renderer>().SetPropertyBlock(propertyBlock);
+
+            navMeshAgent.speed = chasingSpeed;
+
+            while (self.Behavior == EnemyBehavior.Chasing)
+            {
+                navMeshAgent.SetDestination(self.LastPlayerKnownPosition + self.LastPlayerKnownDirection * 2f);
                 yield return null;
             }
         }
+
+        private IEnumerator Search()
+        {
+            var propertyBlock = new MaterialPropertyBlock();
+            GetComponent<Renderer>().GetPropertyBlock(propertyBlock);
+            propertyBlock.SetColor("_BaseColor", Color.yellow);
+            GetComponent<Renderer>().SetPropertyBlock(propertyBlock);
+
+            navMeshAgent.speed = searchingSpeed;
+            var searchPath = Utility.GetRandomNavMeshCircularPath(self.LastPlayerKnownPosition, 6f, 2f);
+
+            searchingPath = searchPath;
+
+            while (self.Behavior == EnemyBehavior.Searching)
+            {
+                for (int i = 0; i < searchPath.Count; i++)
+                {
+                    do
+                    {
+                        navMeshAgent.SetDestination(searchPath[i]);
+                        yield return null;
+                    } while (navMeshAgent.GetRemainingDistance() > 0.5f);
+                }
+            }
+        }
+
+        private IEnumerator SearchingCooldown()
+        {
+            searchingCooldown = 10f;
+
+            while (searchingCooldown > 0)
+            {
+                searchingCooldown -= Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+
+            self.Behavior = EnemyBehavior.Scouting;
+            StartCoroutine(Scout());
+        }
+
+
 
         private Vector3 GetClosestEntity()
         {
@@ -89,66 +148,43 @@ namespace GameLibrary
         }
 
 
-        private void ProcessScouting()
-        {
-            var propertyBlock = new MaterialPropertyBlock();
-            GetComponent<Renderer>().GetPropertyBlock(propertyBlock);
-            propertyBlock.SetColor("_BaseColor", Color.blue);
-            GetComponent<Renderer>().SetPropertyBlock(propertyBlock);
-        }
-
-        private void ProcessSearching()
-        {
-            var propertyBlock = new MaterialPropertyBlock();
-            GetComponent<Renderer>().GetPropertyBlock(propertyBlock);
-            propertyBlock.SetColor("_BaseColor", Color.yellow);
-            GetComponent<Renderer>().SetPropertyBlock(propertyBlock);
-        }
-
-        private void ProcessChasing()
-        {
-            var propertyBlock = new MaterialPropertyBlock();
-            GetComponent<Renderer>().GetPropertyBlock(propertyBlock);
-            propertyBlock.SetColor("_BaseColor", Color.red);
-            GetComponent<Renderer>().SetPropertyBlock(propertyBlock);
-        }
-
-
-
         public void OnProximityTriggerEnter(Collider other)
         {
             var e = new OnEnemyTriggerEnterEvent(gameObject, other.gameObject);
             EventManager.Instance.Dispatch(e);
         }
 
-        public void OnDetectionAreaTriggerEnter(Collider other)
+        private void OnDetectionAreaTriggerEnter(OnPlayerEnteredEnemyFovEvent e)
         {
-            StopCoroutine(SearchingCooldown());
-            self.Behavior = EnemyBehavior.Chasing;
-            self.LastPlayerKnownPosition = other.transform.position;
-            self.LastPlayerKnownDirection = GameManager.WaveManager.Player.Direction;
-        }
-
-        public void OnDetectionAreaTriggerStay(Collider other)
-        {
-            self.Behavior = EnemyBehavior.Chasing;
-            self.LastPlayerKnownPosition = other.transform.position;
-            self.LastPlayerKnownDirection = GameManager.WaveManager.Player.Direction;
-        }
-
-        public void OnDetectionAreaTriggerExit(Collider other)
-        {
-            if(self.Behavior == EnemyBehavior.Chasing)
+            if(e.Enemy == self.GameObject)
             {
-                self.Behavior = EnemyBehavior.Searching;
-                StartCoroutine(SearchingCooldown());
+                searchingCooldown = 0f;
+                self.Behavior = EnemyBehavior.Chasing;
+                StopAllCoroutines();
+                StartCoroutine(Chase());
+                self.LastPlayerKnownPosition = e.Player.transform.position;
+                self.LastPlayerKnownDirection = GameManager.WaveManager.Player.Direction;
             }
         }
 
-        private IEnumerator SearchingCooldown()
+        private void OnDetectionAreaTriggerStay(OnPlayerStayedInEnemyFovEvent e)
         {
-            yield return new WaitForSeconds(10f);
-            self.Behavior = EnemyBehavior.Scouting;
+            if (e.Enemy == self.GameObject)
+            {
+                self.LastPlayerKnownPosition = e.Player.transform.position;
+                self.LastPlayerKnownDirection = GameManager.WaveManager.Player.Direction;
+            }
+        }
+
+        private void OnDetectionAreaTriggerExit(OnPlayerLeftEnemyFovEvent e)
+        {
+            if(self.Behavior == EnemyBehavior.Chasing && e.Enemy == self.GameObject)
+            {
+                self.Behavior = EnemyBehavior.Searching;
+                StopAllCoroutines();
+                StartCoroutine(Search());
+                StartCoroutine(SearchingCooldown());
+            }
         }
     }
 }

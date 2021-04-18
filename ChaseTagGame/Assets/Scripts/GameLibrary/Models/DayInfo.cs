@@ -13,8 +13,9 @@ namespace GameLibrary
         public double InitialTime { get; set; }
         public int ObjectsCollected { get; set; }
         public int RequiredObjects { get; set; }
+        public int GemsCollected { get; set; }
 
-        private const double DEFAULT_TIME_LEFT = 5000;
+        private const double DEFAULT_TIME_LEFT = 60;
         private const int DEFAULT_REQUIRED_OBJECTS = 2;
 
         public DayInfo()
@@ -24,6 +25,7 @@ namespace GameLibrary
             InitialTime = TimeLeft;
             Number = 1;
             ObjectsCollected = 0;
+            GemsCollected = 0;
         }
         public DayInfo(int n)
         {
@@ -32,6 +34,7 @@ namespace GameLibrary
             InitialTime = TimeLeft;
             RequiredObjects = 2 * n;
             ObjectsCollected = 0;
+            GemsCollected = 0;
         }
 
         public override string ToString()

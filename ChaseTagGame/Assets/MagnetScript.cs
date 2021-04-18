@@ -25,7 +25,7 @@ namespace GameLibrary
             if(canUseMagnet)
             {
                 var colliders = Physics.OverlapSphere(transform.position + Vector3.up, 3f);
-                foreach (var c in colliders.Where(p => p.CompareTag(GameTags.PowerUp) || p.CompareTag(GameTags.Objective)))
+                foreach (var c in colliders.Where(p => p.CompareTag(GameTags.PowerUp) || p.CompareTag(GameTags.Objective) || p.CompareTag(GameTags.Gem)))
                     c.transform.position = Vector3.MoveTowards(c.transform.position, transform.position + Vector3.up, Time.deltaTime * attractionSpeed);
             }
         }

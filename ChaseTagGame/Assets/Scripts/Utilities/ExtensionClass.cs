@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace GameLibrary
 {
@@ -126,6 +127,24 @@ namespace GameLibrary
         public static Vector3 Average(this IEnumerable<Vector3> vectors)
         {
             return vectors.Sum() / vectors.Count();
+        }
+
+        #endregion
+
+        #region NavMeshAgent
+
+        public static float GetRemainingDistance(this NavMeshAgent navMeshAgent)
+        {
+            if (navMeshAgent.pathPending ||
+                navMeshAgent.pathStatus == NavMeshPathStatus.PathInvalid ||
+                navMeshAgent.path.corners.Length == 0)
+                return -1f;
+
+            float distance = 0.0f;
+            for (int i = 0; i < navMeshAgent.path.corners.Length - 1; ++i)
+                distance += Vector3.Distance(navMeshAgent.path.corners[i], navMeshAgent.path.corners[i + 1]);
+
+            return distance;
         }
 
         #endregion

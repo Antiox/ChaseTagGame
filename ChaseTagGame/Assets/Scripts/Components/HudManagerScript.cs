@@ -15,7 +15,9 @@ namespace GameLibrary
         private TextMeshProUGUI dayEndedLabel;
         private TextMeshProUGUI fpsCounterLabel;
         private TextMeshProUGUI objectivesCounterLabel;
+        private TextMeshProUGUI gemsCounterLabel;
         private TextMeshProUGUI currencyAmountLabel;
+        private TextMeshProUGUI scoreLabel;
         private TextMeshProUGUI interactiveElementLabel;
 
 
@@ -26,7 +28,9 @@ namespace GameLibrary
             dayEndedLabel = GameObject.Find("DayEndedLabel").GetComponent<TextMeshProUGUI>();
             fpsCounterLabel = GameObject.Find("FpsCounterLabel").GetComponent<TextMeshProUGUI>();
             objectivesCounterLabel = GameObject.Find("ObjectivesCounterLabel").GetComponent<TextMeshProUGUI>();
-            interactiveElementLabel = GameObject.Find("InteractiveElementLabel").GetComponent<TextMeshProUGUI>(); 
+            gemsCounterLabel = GameObject.Find("GemsCounterLabel").GetComponent<TextMeshProUGUI>();
+            interactiveElementLabel = GameObject.Find("InteractiveElementLabel").GetComponent<TextMeshProUGUI>();
+            scoreLabel = GameObject.Find("ScoreLabel").GetComponent<TextMeshProUGUI>();
             optionsMenu.SetActive(false);
             gameOverMenu.SetActive(false);
             shopMenu.SetActive(false);
@@ -49,7 +53,8 @@ namespace GameLibrary
         public void DisplayDayInfo(DayInfo day)
         {
             dayInfoLabel.text = day.ToString();
-            objectivesCounterLabel.text = $"{day.ObjectsCollected}/{day.RequiredObjects}";
+            objectivesCounterLabel.text = $"{day.ObjectsCollected}/{day.RequiredObjects} Keys";
+            gemsCounterLabel.text = $"{day.GemsCollected} Gems";
         }
 
         public void ResumeGame()
@@ -62,9 +67,10 @@ namespace GameLibrary
             optionsMenu.SetActive(true);
         }
 
-        public void DisplayGameOver()
+        public void DisplayGameOver(DayInfo day)
         {
             gameOverMenu.SetActive(true);
+            scoreLabel.text = $"Day {day.Number}";
         }
 
         public void DisplayEndOfDay()

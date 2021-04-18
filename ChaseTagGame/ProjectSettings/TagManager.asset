@@ -12,6 +12,7 @@ TagManager:
   - EnemyPowerUp
   - MagnetTrigger
   - WallHackCamera
+  - Gem
   layers:
   - Default
   - TransparentFX
