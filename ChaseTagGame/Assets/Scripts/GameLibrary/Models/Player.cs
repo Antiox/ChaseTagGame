@@ -36,18 +36,6 @@ namespace GameLibrary
             EventManager.Instance.RemoveListener<OnPlayerExitSafeZoneEvent>(OnPlayerExitSafeZone);
         }
 
-        private void OnPlayerExitSafeZone(OnPlayerExitSafeZoneEvent e)
-        {
-            if(e.Player == gameObject)
-                IsInSafeZone = false;
-        }
-
-        private void OnPlayerEnterSafeZone(OnPlayerEnterSafeZoneEvent e)
-        {
-            if (e.Player == gameObject)
-                IsInSafeZone = true;
-        }
-
         public void TriggerTemporaryInvulnerability()
         {
             gameObject.GetComponent<MonoBehaviour>().StartCoroutine(InvulnerabilityFrames());
@@ -71,6 +59,19 @@ namespace GameLibrary
 
             for (int i = 0; i < renderers.Length; i++)
                 renderers[i].material.color = originalColors[i];
+        }
+
+
+        private void OnPlayerExitSafeZone(OnPlayerExitSafeZoneEvent e)
+        {
+            if (e.Player == gameObject)
+                IsInSafeZone = false;
+        }
+
+        private void OnPlayerEnterSafeZone(OnPlayerEnterSafeZoneEvent e)
+        {
+            if (e.Player == gameObject)
+                IsInSafeZone = true;
         }
     }
 }

@@ -47,7 +47,6 @@ namespace GameLibrary
             SpawnObjectives();
             SpawnGems();
 
-            EventManager.Instance.AddListener<OnSkillBoughtEvent>(OnSkillBought);
         }
 
         public  void Update()
@@ -65,11 +64,6 @@ namespace GameLibrary
             }
         }
 
-        public void OnDestroy()
-        {
-            EventManager.Instance.RemoveListener<OnSkillBoughtEvent>(OnSkillBought);
-        }
-
 
         public void LoadNextDay()
         {
@@ -83,7 +77,6 @@ namespace GameLibrary
             Currency = 0;
             CurrentDay = new DayInfo();
             Enemies.Clear();
-            EventManager.Instance.RemoveListener<OnSkillBoughtEvent>(OnSkillBought);
         }
 
         public void ExtendDayDuration(double amount)
@@ -179,13 +172,6 @@ namespace GameLibrary
                 CurrentDay.ObjectsCollected--;
                 yield return new WaitForSeconds(0.01f);
             }
-        }
-
-
-
-        private void OnSkillBought(OnSkillBoughtEvent e)
-        {
-            Currency = e.NewCurrency;
         }
     }
 }

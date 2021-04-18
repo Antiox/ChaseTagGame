@@ -60,13 +60,13 @@ namespace GameLibrary
         {
             EventManager.AddListener<OnPowerUpTriggerEnterEvent>(OnPowerUpTriggerEnter);
             EventManager.AddListener<OnEnemyTriggerEnterEvent>(OnEnemyTriggerEnter);
-            EventManager.AddListener<OnPointsAddedEvent>(OnPointsAdded);
             EventManager.AddListener<OnDayEndedEvent>(OnDayEnded);
             EventManager.AddListener<OnTimeAddedEvent>(OnTimeAdded);
             EventManager.AddListener<OnPlayerExitSafeZoneEvent>(OnPlayerExitSafeZone);
             EventManager.AddListener<OnObjectiveItemTriggerEnterEvent>(OnObjectiveItemTriggerEnter);
             EventManager.AddListener<OnInteractiveElementPressedEvent>(OnInteractiveElementPressed);
             EventManager.AddListener<OnGemTriggerEnterEvent>(OnGemTriggerEnter);
+            EventManager.AddListener<OnSkillBoughtEvent>(OnSkillBought);
         }
 
         public static void Update()
@@ -88,15 +88,15 @@ namespace GameLibrary
         {
             SettingsManager.OnDestroy();
             SkillsManager.OnDestroy();
-            WaveManager.OnDestroy();
             EventManager.RemoveListener<OnPowerUpTriggerEnterEvent>(OnPowerUpTriggerEnter);
             EventManager.RemoveListener<OnEnemyTriggerEnterEvent>(OnEnemyTriggerEnter);
-            EventManager.RemoveListener<OnPointsAddedEvent>(OnPointsAdded);
             EventManager.RemoveListener<OnDayEndedEvent>(OnDayEnded);
             EventManager.RemoveListener<OnPlayerExitSafeZoneEvent>(OnPlayerExitSafeZone);
             EventManager.RemoveListener<OnInteractiveElementPressedEvent>(OnInteractiveElementPressed);
             EventManager.RemoveListener<OnObjectiveItemTriggerEnterEvent>(OnObjectiveItemTriggerEnter);
             EventManager.RemoveListener<OnGemTriggerEnterEvent>(OnGemTriggerEnter);
+            EventManager.RemoveListener<OnSkillBoughtEvent>(OnSkillBought);
+
         }
 
         public static void Reset()
@@ -182,11 +182,6 @@ namespace GameLibrary
             }
         }
 
-        private static void OnPointsAdded(OnPointsAddedEvent e)
-        {
-            Points += e.Points;
-        }
-
         private static void OnDayEnded(OnDayEndedEvent e)
         {
             if(WaveManager.IsPlayerInSafeZone() && WaveManager.CollectedEnoughObjectives())
@@ -228,6 +223,11 @@ namespace GameLibrary
         {
             if(e.Action == ActionType.EndDay)
                 WaveManager.AccelerateEndOfDay();
+        }
+
+        private static void OnSkillBought(OnSkillBoughtEvent e)
+        {
+            WaveManager.Currency = e.NewCurrency;
         }
     }
 }

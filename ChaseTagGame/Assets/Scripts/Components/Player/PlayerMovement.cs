@@ -117,14 +117,13 @@ namespace GameLibrary
             }
 
             UpdateCollider();
-            AddPoints();
         }
 
         void FixedUpdate()
         {
             currentSlope = rigidBody.GetSlope(lastPlayerDirection);
             isGrounded = rigidBody.IsGrounded(groundCheckRadius) && playerCollider.enabled;
-            canWalkOnSlope = rigidBody.CanWalkOnSlope(currentSlope, MaxSlopeAngle);
+            canWalkOnSlope = currentSlope.Angle <= MaxSlopeAngle;
             isAgainstWall = rigidBody.IsFacingWall(faceCaster);
             frontWallNormal = isAgainstWall ? rigidBody.GetFacingWallNormal(faceCaster) : Vector3.zero;
 
@@ -216,10 +215,6 @@ namespace GameLibrary
         private void ProcessEndOfClimb()
         {
             transform.position = Vector3.Lerp(transform.position, climbEndDestination, climbEndTimer / 2f);
-        }
-        private void AddPoints()
-        {
-            EventManager.Instance.Dispatch(new OnPointsAddedEvent(PlayerDirection.magnitude * Time.deltaTime));
         }
     }
 }

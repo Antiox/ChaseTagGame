@@ -66,11 +66,6 @@ namespace GameLibrary
             return hitPoints;
         }
 
-        public static bool CanWalkOnSlope(this Rigidbody body, Slope slope, float maxAngle)
-        {
-            return slope.Angle <= maxAngle;
-        }
-
         public static bool IsOnSlope(this Rigidbody body)
         {
             Debug.DrawRay(body.transform.position, Vector3.down * 1f, Color.red, Time.deltaTime);
