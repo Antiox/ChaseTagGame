@@ -17,7 +17,7 @@ namespace GameLibrary
         {
             Time.timeScale = 1f;
             GameManager.Start();
-            //StartCoroutine(SpawnPowerUp(5f));
+            StartCoroutine(SpawnPowerUp(15f));
         }
 
         void Update()
@@ -28,7 +28,7 @@ namespace GameLibrary
         void OnDestroy()
         {
             GameManager.OnDestroy();
-            StopCoroutine(SpawnPowerUp(5f));
+            StopCoroutine(SpawnPowerUp(15f));
         }
 
 

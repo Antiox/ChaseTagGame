@@ -7,11 +7,13 @@ namespace GameLibrary
     {
         public SettingType Type { get; set; }
         public dynamic Value { get; set; }
+        public dynamic DefaultValue { get; set; }
         private readonly Type valueType;
 
         public Setting(SettingType type)
         {
             Type = type;
+
 
             valueType = Type switch
             {
@@ -19,15 +21,23 @@ namespace GameLibrary
                 _ => typeof(int),
             };
         }
+        public Setting(SettingType type, dynamic defaultValue) : this(type)
+        {
+            DefaultValue = defaultValue;
+        }
+
 
         public void Load()
         {
+            var settingName = Type.ToString("g");
+            var hasKey = PlayerPrefs.HasKey(settingName);
+
             if (valueType == typeof(float))
-                Value = PlayerPrefs.GetFloat(Type.ToString("g"));
+                Value = hasKey ? PlayerPrefs.GetFloat(settingName) : DefaultValue;
             else if (valueType == typeof(int))
-                Value = PlayerPrefs.GetInt(Type.ToString("g"));
+                Value = hasKey ? PlayerPrefs.GetInt(settingName) : DefaultValue;
             else if (valueType == typeof(string))
-                Value = PlayerPrefs.GetString(Type.ToString("g"));
+                Value = hasKey ? PlayerPrefs.GetString(settingName) : DefaultValue;
         }
 
         public void Save(dynamic newValue)

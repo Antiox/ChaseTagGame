@@ -60,17 +60,23 @@ namespace GameLibrary
         public void ResumeGame()
         {
             optionsMenu.SetActive(false);
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
 
         public void PauseGame()
         {
             optionsMenu.SetActive(true);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
 
         public void DisplayGameOver(DayInfo day)
         {
             gameOverMenu.SetActive(true);
             scoreLabel.text = $"Day {day.Number}";
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
 
         public void DisplayEndOfDay()
@@ -81,6 +87,8 @@ namespace GameLibrary
         public void DisplayShopMenu()
         {
             shopMenu.SetActive(true);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
 
         public void DisplayCurrencyAmount(int amount)

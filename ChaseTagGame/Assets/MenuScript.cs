@@ -12,6 +12,8 @@ namespace GameLibrary
     {
         public void StartGame()
         {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
             GameManager.Reset();
             SceneManager.LoadScene(1);
         }

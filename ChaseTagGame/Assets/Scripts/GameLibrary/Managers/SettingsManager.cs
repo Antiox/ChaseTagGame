@@ -58,7 +58,7 @@ namespace GameLibrary
         {
             settings = new List<ISetting>
             {
-                new Setting(SettingType.MouseSensitivity),
+                new Setting(SettingType.MouseSensitivity, 1f),
             };
         }
 

@@ -45,6 +45,14 @@ namespace GameLibrary
                 MainGameObject = GameObject.Find("GameManager");
                 MainGameScript = MainGameObject.GetComponent<GameScript>();
                 HudManager = MainGameObject.GetComponent<HudManagerScript>();
+
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
             }
         }
 
