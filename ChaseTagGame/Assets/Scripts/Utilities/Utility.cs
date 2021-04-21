@@ -53,6 +53,20 @@ namespace GameLibrary
             return hit.position;
         }
 
+        public static Vector3 GetRandomNavMeshPosition(int layerMask)
+        {
+            var navMeshData = NavMesh.CalculateTriangulation();
+            var randomVertex = UnityEngine.Random.Range(0, navMeshData.vertices.Length);
+            var randomPoint = navMeshData.vertices[randomVertex] + UnityEngine.Random.insideUnitSphere * 20f;
+            NavMesh.SamplePosition(randomPoint, out var hit, 20f, layerMask);
+            NavMesh.FindClosestEdge(hit.position, out var edge, layerMask);
+
+            if (hit.position == edge.position)
+                return GetRandomNavMeshPosition(layerMask);
+
+            return hit.position;
+        }
+
         public static List<Vector3> GetRandomNavMeshPath()
         {
             var path = new List<Vector3>();

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 
 namespace GameLibrary
@@ -48,6 +49,7 @@ namespace GameLibrary
 
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
+                GenerateGrass();
             }
             else
             {
@@ -156,6 +158,16 @@ namespace GameLibrary
         public static bool IsOwningSkill(SkillType type)
         {
             return SkillsManager.IsOwningSkill(type);
+        }
+
+        private static void GenerateGrass()
+        {
+            for (int i = 0; i < 500; i++)
+            {
+                var grassType = UnityEngine.Random.Range(1, 3);
+                var position = Utility.GetRandomNavMeshPosition(NavMesh.GetAreaFromName("Grass"));
+                GameObject.Instantiate(Resources.Load<GameObject>($"Prefabs/AN_Grass_{grassType}"), position, Quaternion.identity);
+            }
         }
 
 
