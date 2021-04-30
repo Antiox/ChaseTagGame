@@ -162,11 +162,17 @@ namespace GameLibrary
 
         private static void GenerateGrass()
         {
-            for (int i = 0; i < 500; i++)
+            for (int i = 0; i < 100; i++)
             {
-                var grassType = UnityEngine.Random.Range(1, 3);
-                var position = Utility.GetRandomNavMeshPosition(NavMesh.GetAreaFromName("Grass"));
+                var grassType = UnityEngine.Random.value > 0.9f ? 2 : 1;
+                var position = Utility.GetRandomNavMeshPosition();
                 GameObject.Instantiate(Resources.Load<GameObject>($"Prefabs/AN_Grass_{grassType}"), position, Quaternion.identity);
+            }
+
+            for (int i = 0; i < 20; i++)
+            {
+                var position = Utility.GetRandomNavMeshPosition();
+                GameObject.Instantiate(Resources.Load<GameObject>($"Prefabs/AN_Flowers"), position, Quaternion.identity);
             }
         }
 
